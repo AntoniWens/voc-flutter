@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "210481001115",
+    "firebase_url": "https://chattranslator-94726-default-rtdb.firebaseio.com",
+    "project_id": "chattranslator-94726",
+    "storage_bucket": "chattranslator-94726.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210481001115:android:bb487d6c15b5d8ae46cc3e",
+        "android_client_info": {
+          "package_name": "com.example.chat_translator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKWQEZaoD6AO6z5FHlXMVBkkGIzzW-hRQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210481001115:android:119b275261101e4b46cc3e",
+        "android_client_info": {
+          "package_name": "com.example.klikhemat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKWQEZaoD6AO6z5FHlXMVBkkGIzzW-hRQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210481001115:android:6c4307dee200f3a246cc3e",
+        "android_client_info": {
+          "package_name": "com.example.voc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKWQEZaoD6AO6z5FHlXMVBkkGIzzW-hRQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
