@@ -33,6 +33,8 @@ class UserChatData {
   String date;
   String time;
   String status;
+  String replyMessageId;
+  String replyMessage;
 
   UserChatData({
     required this.id,
@@ -44,7 +46,9 @@ class UserChatData {
     required this.attachmentType,
     required this.date,
     required this.time,
-    required this.status
+    required this.status,
+    required this.replyMessageId,
+    required this.replyMessage
   });
 
   factory UserChatData.fromJson(Map<String, dynamic> json) => UserChatData(
@@ -56,7 +60,7 @@ class UserChatData {
     attachment: json["attachment"],
     attachmentType: json["attachment_type"],
     date: json["date"],
-    time: json['time'], status: json['status']
+    time: json['time'], status: json['status'], replyMessageId: json['reply_message_id'] ?? '', replyMessage: json['reply_message']
   );
 
   Map<String, dynamic> toJson() => {
@@ -69,6 +73,8 @@ class UserChatData {
     "attachment_type": attachmentType,
     "date": date,
     'time': time,
-    'status': status
+    'status': status,
+    'reply_message_id': replyMessageId,
+    'reply_message': replyMessage
   };
 }

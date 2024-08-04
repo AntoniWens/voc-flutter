@@ -100,7 +100,7 @@ class _$MainDatabase extends MainDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `AllChat` (`id` TEXT NOT NULL, `senderId` TEXT NOT NULL, `senderFullname` TEXT NOT NULL, `senderLanguage` TEXT NOT NULL, `receiverId` TEXT NOT NULL, `receiverFullname` TEXT NOT NULL, `receiverLanguage` TEXT NOT NULL, `lastMessage` TEXT NOT NULL, `translationMsg` TEXT NOT NULL, `msgSenderId` TEXT NOT NULL, `attachment` TEXT NOT NULL, `attacmentType` TEXT NOT NULL, `messageStatus` TEXT NOT NULL, `date` TEXT NOT NULL, `time` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChatMessage` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `translationMsg` TEXT NOT NULL, `attachment` TEXT NOT NULL, `attachmentType` TEXT NOT NULL, `date` TEXT NOT NULL, `time` TEXT NOT NULL, `status` TEXT NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChatMessage` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `translationMsg` TEXT NOT NULL, `attachment` TEXT NOT NULL, `attachmentType` TEXT NOT NULL, `date` TEXT NOT NULL, `time` TEXT NOT NULL, `status` TEXT NOT NULL, `replyMessageId` TEXT NOT NULL, `replyMessage` TEXT NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -260,7 +260,9 @@ class _$MessageDao extends MessageDao {
                   'attachmentType': item.attachmentType,
                   'date': item.date,
                   'time': item.time,
-                  'status': item.status
+                  'status': item.status,
+                  'replyMessageId': item.replyMessageId,
+                  'replyMessage': item.replyMessage
                 },
             changeListener);
 
@@ -275,7 +277,7 @@ class _$MessageDao extends MessageDao {
   @override
   Stream<List<ChatMessage>> getAllMessage(String chatId) {
     return _queryAdapter.queryListStream(
-        'SELECT * FROM ChatMessage WHERE chatId =?1',
+        'SELECT * FROM ChatMessage WHERE chatId =?1 ORDER BY date,time ASC',
         mapper: (Map<String, Object?> row) => ChatMessage(
             row['id'] as String,
             row['chatId'] as String,
@@ -286,7 +288,9 @@ class _$MessageDao extends MessageDao {
             row['attachmentType'] as String,
             row['date'] as String,
             row['time'] as String,
-            row['status'] as String),
+            row['status'] as String,
+            row['replyMessageId'] as String,
+            row['replyMessage'] as String),
         arguments: [chatId],
         queryableName: 'ChatMessage',
         isView: false);

@@ -1,30 +1,30 @@
 
-import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:voc/local_service/local_service.dart';
 import 'package:voc/util.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../api_service/body/send_message_body.dart';
 import '../../../api_service/chat_service.dart';
 import '../../../api_service/response/send_message_response.dart';
-import '../../../api_service/response/user_chat_response.dart';
-import '../../../api_service/response/websocket_response.dart';
-import '../../../configuration.dart';
 import '../../../local_service/all_chat.dart';
 import '../../../local_service/message.dart';
 import '../../../preferences.dart';
 import '../model/chat_model.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class ChatController extends GetxController {
 
   final model = ChatModel();
   final typeController = TextEditingController();
-  final scrollController = ScrollController();
+  final autoScrollController = AutoScrollController(axis: Axis.vertical);
   late ChatService chatService;
+
+  FocusNode focusNode = FocusNode();
 
   void allMessage() {
     LocalService.getAllMessage(Get.arguments['chat_id'])?.listen((e) {
@@ -33,58 +33,19 @@ class ChatController extends GetxController {
     });
   }
 
-  void createSocket() {
-    final channel =
-    WebSocketChannel.connect(Uri.parse(Configuration.socketUrl));
-
-    channel.sink.add(jsonEncode({
-      "event": "pusher:subscribe",
-      "data": {"auth": "", "channel": "chat.voc.${Preferences.getUser()['id']}"}
-    }));
-
-    channel.stream.listen((e) async {
-      final response = WebsocketResponse.fromJson(e);
-      if (response.event == 'pusher:ping') {
-        channel.sink.add(jsonEncode(
-          {"event": "pusher:pong"},
-        ));
-      }
-
-      if (response.data != null) {
-        await LocalService.addChat(AllChat(
-            response.data!.id,
-            response.data!.users[0].id,
-            response.data!.users[0].fullName,
-            response.data!.users[0].language,
-            response.data!.users[1].id,
-            response.data!.users[1].fullName,
-            response.data!.users[1].language,
-            response.data!.message!.message,
-            response.data!.message!.translationMsg,
-            response.data!.message!.senderId,
-            response.data!.message!.attachment,
-            response.data!.message!.attachmentType,
-            response.data!.message!.status,
-            response.data!.date,
-            response.data!.time));
-        await LocalService.addMessage(ChatMessage(
-            response.data!.message!.id,
-            response.data!.message!.chatId,
-            response.data!.message!.senderId,
-            response.data!.message!.message,
-            response.data!.message!.translationMsg,
-            response.data!.message!.attachment,
-            response.data!.message!.attachmentType,
-            response.data!.date,
-            response.data!.time, response.data!.message!.status,model.replyMessageId.value));
-      }
-    });
+  Future<void> scrollToItem(int index) async {
+    await autoScrollController.scrollToIndex(
+      index,
+      preferPosition: AutoScrollPosition.begin,
+    );
+    await autoScrollController.highlight(index);
   }
 
   void scrollDown() {
-    scrollController.animateTo(
-      scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 300),
+
+    autoScrollController.animateTo(
+      autoScrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 500),
       curve: Curves.fastOutSlowIn,
     );
   }
@@ -124,7 +85,7 @@ class ChatController extends GetxController {
         '',
         '',
         Util.currentDateTime(true),
-        Util.currentDateTime(false),'PENDING',model.replyMessageId.value));
+        Util.currentDateTime(false),'PENDING',model.replyMessageId.value, model.replyMessage.value));
     final body = SendMessageBody(Get.arguments['user_id'], typeController.text, id, Get.arguments['chat_id'],model.replyMessageId.value);
     final response = await chatService.sendMessage(body);
     if (response.runtimeType == SendMessageResponse) {
@@ -156,7 +117,7 @@ class ChatController extends GetxController {
             '',
             response.data.date,
             response.data.time,
-            response.data.message.status,model.replyMessageId.value));
+            response.data.message.status,model.replyMessageId.value, model.replyMessage.value));
         typeController.clear();
       } else {
         Fluttertoast.showToast(msg: send.message);
@@ -175,8 +136,22 @@ class ChatController extends GetxController {
   @override
   void onReady() async {
     await LocalService.init();
-    //createSocket();
+    Future.delayed(Duration(milliseconds: 300), () {
+      scrollDown();
+    });
     allMessage();
+
+    autoScrollController.addListener(() {
+      model.showScrollBottom.value = autoScrollController.position.pixels < autoScrollController.position.maxScrollExtent;
+      model.showScrollBottom.refresh();
+    });
+
+    KeyboardVisibilityController().onChange.listen((e) {
+      Future.delayed(Duration(milliseconds: 500), () => {
+        scrollDown()
+      });
+    });
+
     super.onReady();
   }
 
@@ -189,6 +164,7 @@ class ChatController extends GetxController {
   @override
   void onClose() {
     Preferences.saveInChat(false);
+    focusNode.dispose();
     super.onClose();
   }
 }

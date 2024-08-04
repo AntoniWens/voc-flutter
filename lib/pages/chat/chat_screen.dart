@@ -1,3 +1,9 @@
+import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:voc/widget/chat_date.dart';
+import 'package:voc/widget/receiver_chat_reply.dart';
+import 'package:voc/widget/sender_chat_reply.dart';
+
 import '../../color_font_util.dart';
 import '../../preferences.dart';
 import '../../widget/receiver_chat.dart';
@@ -76,166 +82,300 @@ class ChatScreen extends GetWidget<ChatController> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.only(top: 16, bottom: 16),
-                  child: Obx(
-                    () => ListView.builder(
-                        shrinkWrap: true,
-                        controller: controller.scrollController,
-                        itemCount: controller.model.messages.length,
-                        itemBuilder: (context, index) {
-                          return Obx(() => controller
-                                      .model.messages[index].senderId !=
-                                  Preferences.getUser()['id']
-                              ? ReceiverChat(
-                                  data: controller.model.messages[index],
-                                  showOriginalText:
-                                      controller.model.showOriginalText.value,
-                                  onReply: () {
-                                    controller.showReply(controller
-                                        .model.messages[index].message,controller
-                                        .model.messages[index].id );
+      body: Stack(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.only(top: 16, bottom: 16),
+                    child: Obx(
+                      () => ListView.separated(
+                          controller: controller.autoScrollController,
+                          itemCount: controller.model.messages.length + 1,
+                          separatorBuilder: (context, index) {
+                            return index == 0
+                                ? ChatDate()
+                                : controller.model.messages[index - 1].date !=
+                                        controller.model.messages[index].date
+                                    ? ChatDate()
+                                    : SizedBox();
+                          },
+                          itemBuilder: (context, index) {
+                            return AutoScrollTag(
+                                key: ValueKey(index),
+                                controller: controller.autoScrollController,
+                                index: index,
+                                highlightColor: ColorFontUtil.grayE8,
+                                child: index != 0
+                                    ? Obx(() => (controller
+                                                    .model
+                                                    .messages[index - 1]
+                                                    .senderId !=
+                                                Preferences.getUser()['id']) &&
+                                            (controller
+                                                .model
+                                                .messages[index - 1]
+                                                .replyMessageId
+                                                .isNotEmpty)
+                                        ? ReceiverChatReply(
+                                            data: controller
+                                                .model.messages[index - 1],
+                                            showOriginalText: controller
+                                                .model.showOriginalText.value,
+                                            onReply: () {
+                                              controller.showReply(
+                                                  controller
+                                                      .model
+                                                      .messages[index - 1]
+                                                      .message,
+                                                  controller.model
+                                                      .messages[index - 1].id);
+                                            },
+                                  replyTap: () async {
+                                    final ind = controller
+                                        .model.messages
+                                        .indexWhere((e) =>
+                                    e.id ==
+                                        controller
+                                            .model
+                                            .messages[
+                                        index - 1]
+                                            .replyMessageId);
+                                    await controller
+                                        .scrollToItem(ind);
                                   },
-                                )
-                              : SenderChat(
-                                  data: controller.model.messages[index],
-                                ));
-                        }),
-                  )),
-            ),
-            Obx(
-              () => controller.model.replyMessage.isNotEmpty
-                  ? Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(left: 16, right: 16),
-                      padding: EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5)),
+                                          )
+                                        : (controller.model.messages[index - 1]
+                                                        .senderId ==
+                                                    Preferences.getUser()[
+                                                        'id']) &&
+                                                (controller
+                                                    .model
+                                                    .messages[index - 1]
+                                                    .replyMessageId
+                                                    .isNotEmpty)
+                                            ? SenderChatReply(
+                                                data: controller
+                                                    .model.messages[index - 1],
+                                                onReply: () {
+                                                  controller.showReply(
+                                                      controller
+                                                          .model
+                                                          .messages[index - 1]
+                                                          .message,
+                                                      controller
+                                                          .model
+                                                          .messages[index - 1]
+                                                          .id);
+                                                },
+                                                replyTap: () async {
+                                                  final ind = controller
+                                                      .model.messages
+                                                      .indexWhere((e) =>
+                                                          e.id ==
+                                                          controller
+                                                              .model
+                                                              .messages[
+                                                                  index - 1]
+                                                              .replyMessageId);
+                                                  await controller
+                                                      .scrollToItem(ind);
+                                                },
+                                              )
+                                            : controller
+                                                        .model
+                                                        .messages[index - 1]
+                                                        .senderId !=
+                                                    Preferences.getUser()['id']
+                                                ? ReceiverChat(
+                                                    data: controller.model
+                                                        .messages[index - 1],
+                                                    showOriginalText: controller
+                                                        .model
+                                                        .showOriginalText
+                                                        .value,
+                                                    onReply: () {
+                                                      controller.showReply(
+                                                          controller
+                                                              .model
+                                                              .messages[
+                                                                  index - 1]
+                                                              .message,
+                                                          controller
+                                                              .model
+                                                              .messages[
+                                                                  index - 1]
+                                                              .id);
+                                                    },
+                                                  )
+                                                : SenderChat(
+                                                    data: controller.model
+                                                        .messages[index - 1],
+                                                    onReply: () {
+                                                      controller.showReply(
+                                                          controller
+                                                              .model
+                                                              .messages[
+                                                                  index - 1]
+                                                              .message,
+                                                          controller
+                                                              .model
+                                                              .messages[
+                                                                  index - 1]
+                                                              .id);
+                                                    },
+                                                  ))
+                                    : SizedBox());
+                          }),
+                    )),
+              ),
+              Obx(
+                () => controller.model.replyMessage.isNotEmpty
+                    ? Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.only(left: 16, right: 16),
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    color: ColorFontUtil.grayFA,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      Get.arguments['full_name'],
+                                      style: TextStyle(
+                                          fontFamily: ColorFontUtil.poppins,
+                                          color: ColorFontUtil.red15,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      controller.model.replyMessage.value,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontFamily: ColorFontUtil.poppins,
+                                        color: ColorFontUtil.black25,
+                                        fontSize: 13,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8, right: 6),
+                                child: Icon(
+                                  Icons.close,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              onTap: () {
+                                controller.showReply('', '');
+                              },
+                            )
+                          ],
+                        ),
+                      )
+                    : SizedBox(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: controller.typeController,
+                        focusNode: controller.focusNode,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        style: TextStyle(
+                            fontFamily: ColorFontUtil.poppins,
+                            fontWeight: FontWeight.w400),
+                        decoration: InputDecoration(
+                            hintText: 'Type something',
+                            hintStyle: TextStyle(
+                                fontFamily: ColorFontUtil.poppins,
+                                fontWeight: FontWeight.w400),
+                            fillColor: ColorFontUtil.grayE8,
+                            filled: true,
+                            contentPadding: const EdgeInsets.only(
+                                top: 8, bottom: 8, left: 16, right: 16),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(20)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.circular(20))),
+                        onChanged: (v) {
+                          controller.showSendBtn(v.isNotEmpty);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
                       child: Row(
                         children: [
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  color: ColorFontUtil.grayFA,
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    Get.arguments['full_name'],
-                                    style: TextStyle(
-                                        fontFamily: ColorFontUtil.poppins,
-                                        color: ColorFontUtil.red15,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  Text(
-                                    controller.model.replyMessage.value,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      fontFamily: ColorFontUtil.poppins,
-                                      color: ColorFontUtil.black25,
-                                      fontSize: 13,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Image.asset(
+                              'assets/images/attach.png',
+                              width: 20,
+                              height: 20,
                             ),
                           ),
-                          GestureDetector(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8, right: 6),
-                              child: Icon(
-                                Icons.close,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
+                          Obx(
+                            () => SizedBox(
+                              width: controller.model.showBtn.value ? 16 : 0,
                             ),
-                            onTap: () {
-                              controller.showReply('' ,'');
-                            },
-                          )
+                          ),
+                          Obx((() => controller.model.showBtn.value
+                              ? GestureDetector(
+                                  onTap: () async {
+                                    await controller.sendMessage();
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/send.png',
+                                    width: 20,
+                                    height: 20,
+                                  ))
+                              : SizedBox()))
                         ],
                       ),
                     )
-                  : SizedBox(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: controller.typeController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      style: TextStyle(
-                          fontFamily: ColorFontUtil.poppins,
-                          fontWeight: FontWeight.w400),
-                      decoration: InputDecoration(
-                          hintText: 'Type something',
-                          hintStyle: TextStyle(
-                              fontFamily: ColorFontUtil.poppins,
-                              fontWeight: FontWeight.w400),
-                          fillColor: ColorFontUtil.grayE8,
-                          filled: true,
-                          contentPadding: const EdgeInsets.only(
-                              top: 8, bottom: 8, left: 16, right: 16),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.transparent),
-                              borderRadius: BorderRadius.circular(20)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.transparent),
-                              borderRadius: BorderRadius.circular(20))),
-                      onChanged: (v) {
-                        controller.showSendBtn(v.isNotEmpty);
+                  ],
+                ),
+              )
+            ],
+          ),
+          Positioned(
+              bottom: 160,
+              right: 16,
+              child: Obx(() => controller.model.showScrollBottom.value
+                  ? FloatingActionButton.small(
+                      onPressed: () {
+                        controller.scrollDown();
                       },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            controller.updateSize();
-                          },
-                          child: Image.asset(
-                            'assets/images/attach.png',
-                            width: 20,
-                            height: 20,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        Obx((() => controller.model.showBtn.value ? GestureDetector(
-                            onTap: () async {
-                              await controller.sendMessage();
-                            },
-                            child: Image.asset(
-                              'assets/images/send.png',
-                              width: 20,
-                              height: 20,
-                            )): SizedBox()))
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
+                      child: Icon(Icons.arrow_downward_outlined),
+                      backgroundColor: ColorFontUtil.redF5,
+                    )
+                  : SizedBox())),
+        ],
       ),
     );
   }

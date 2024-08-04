@@ -2,6 +2,7 @@
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/state_manager.dart';
 import 'package:voc/local_service/message.dart';
 
 import '../../../api_service/response/user_chat_response.dart';
@@ -15,5 +16,6 @@ class ChatModel {
   RxBool showOriginalText = false.obs;
   RxString replyMessage = ''.obs;
   RxString replyMessageId = ''.obs;
+  RxBool showScrollBottom = false.obs;
   RxBool showBtn = false.obs;
 }

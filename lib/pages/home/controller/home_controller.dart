@@ -64,7 +64,7 @@ class HomeController extends GetxController {
             e.attachmentType,
             e.date,
             e.time,
-            e.status,e.replyMessageId));
+            e.status,e.replyMessageId, e.replyMessage));
         }
         if (chatMessage.isNotEmpty) {
           await LocalService.addAllMessage(chatMessage);
@@ -143,7 +143,7 @@ class HomeController extends GetxController {
             response.data!.date,
             response.data!.time,
             response.data!.message!.status,
-            response.data!.message!.replyMessageId
+            response.data!.message!.replyMessageId, response.data!.message!.replyMessage
           ));
         }
       }

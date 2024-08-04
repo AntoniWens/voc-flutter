@@ -8,6 +8,7 @@ class Message {
   String attachmentType;
   String status;
   String replyMessageId;
+  String replyMessage;
 
   Message({
     required this.id,
@@ -18,7 +19,8 @@ class Message {
     required this.attachment,
     required this.attachmentType,
     required this.status,
-    required this.replyMessageId
+    required this.replyMessageId,
+    required this.replyMessage
   });
 
   factory Message.fromJson(Map<String, dynamic> json) => Message(
@@ -30,7 +32,7 @@ class Message {
       attachment: json["attachment"],
       attachmentType: json["attachment_type"],
       status: json['status'],
-    replyMessageId: json['reply_message_id']
+    replyMessageId: json['reply_message_id'] ?? '', replyMessage: json['reply_message']
   );
 
   Map<String, dynamic> toJson() => {
@@ -42,6 +44,7 @@ class Message {
     "attachment": attachment,
     "attachment_type": attachmentType,
     'status': status,
-    'reply_message_id': replyMessageId
+    'reply_message_id': replyMessageId,
+    'reply_message': replyMessage
   };
 }

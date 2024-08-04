@@ -16,6 +16,7 @@ class ChatMessage {
   String time;
   String status;
   String replyMessageId;
+  String replyMessage;
 
   ChatMessage(
       this.id,
@@ -26,5 +27,5 @@ class ChatMessage {
       this.attachment,
       this.attachmentType,
       this.date,
-      this.time, this.status, this.replyMessageId);
+      this.time, this.status, this.replyMessageId, this.replyMessage);
 }

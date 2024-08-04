@@ -62,7 +62,7 @@ class SyncingController extends GetxController {
               e.attachmentType,
               e.date,
               e.time,
-            e.status,));
+            e.status,e.replyMessageId, e.replyMessage));
         }
         if (chatMessage.isNotEmpty) {
           await LocalService.addAllMessage(chatMessage);

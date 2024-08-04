@@ -51,6 +51,9 @@ dependencies:
   socket_io_client: ^3.0.0-beta.2
   firebase_messaging: ^15.0.4
   swipe_to: ^1.0.6
+  flutter_keyboard_visibility: ^6.0.0
+  scrollable_positioned_list: ^0.3.8
+  scroll_to_index: ^3.0.1
 
 dev_dependencies:
   flutter_test:

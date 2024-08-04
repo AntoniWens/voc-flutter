@@ -6,11 +6,12 @@ import 'package:voc/local_service/message.dart';
 
 import '../color_font_util.dart';
 
-class SenderChat extends StatelessWidget {
-  const SenderChat({super.key, required this.data, required this.onReply});
+class SenderChatReply extends StatelessWidget {
+  const SenderChatReply({super.key, required this.data, required this.onReply, required this.replyTap});
 
   final ChatMessage data;
   final VoidCallback onReply;
+  final VoidCallback replyTap;
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +37,45 @@ class SenderChat extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      replyTap.call();
+                    },
+                    child: Container(
+                      width: 150,
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: ColorFontUtil.grayE8.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            Get.arguments['full_name'],
+                            style: TextStyle(
+                                fontFamily: ColorFontUtil.poppins,
+                                color: ColorFontUtil.red15,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          Text(
+                            data.replyMessage,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontFamily: ColorFontUtil.poppins,
+                              color: ColorFontUtil.black25,
+                              fontSize: 12,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(left: 4, top: 4, right: 4),
                     child: Text(
-                      'data.message dawdad wad ad aw',
+                      data.message,
                       style: TextStyle(
                           fontFamily: ColorFontUtil.poppins,
                           fontSize: 14,
@@ -62,7 +98,6 @@ class SenderChat extends StatelessWidget {
                         ),
                         SizedBox(width: 2,),
                         Obx(() => Icon(data.status == 'PENDING' ? Icons.pending : Icons.done_all, color: Colors.red,size: 14,))
-
                       ],
                     ),
                   )
