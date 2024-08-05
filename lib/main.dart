@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       translations: AppTranslate(),
       locale: Get.deviceLocale,
-      initialRoute: login ? Routes.home : Routes.login,
+      initialRoute: login ? Routes.mainPage : Routes.login,
       getPages: AppRoutes.pages,
     );
   }

@@ -10,8 +10,10 @@ import '../../route_management/routes.dart';
 import '../../widget/home_chat.dart';
 import 'controller/home_controller.dart';
 
-class HomeScreen extends GetWidget<HomeController> {
-  const HomeScreen({super.key});
+class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
+
+  final controller = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +35,10 @@ class HomeScreen extends GetWidget<HomeController> {
                 return Obx(() => HomeChat(allChat: controller.model.allChats[index], onTap: () async {
                   await LocalService.updateChat(controller.model.allChats[index].id, 'SUCCESS');
                   final result = await Get.toNamed(Routes.chat, arguments: {
-                    'user_id': controller.model.allChats[index].receiverId == Preferences.getUser()['id'] ? controller.model.allChats[index].senderId : controller.model.allChats[index].receiverId,
+                    'user_id': controller.model.allChats[index].userTwoId == Preferences.getUser()['id'] ? controller.model.allChats[index].userOneId : controller.model.allChats[index].userTwoId,
                     'chat_id': controller.model.allChats[index].id,
-                    'full_name': controller.model.allChats[index].receiverId == Preferences.getUser()['id'] ? controller.model.allChats[index].senderFullname : controller.model.allChats[index].receiverFullname,
-                    'language': controller.model.allChats[index].receiverLanguage
+                    'full_name': controller.model.allChats[index].userTwoId == Preferences.getUser()['id'] ? controller.model.allChats[index].userOneFullname : controller.model.allChats[index].userTwoFullname,
+                    'language': controller.model.allChats[index].userTwoLanguage
                   });
                   if (result != null) {
                     controller.queryAllChat();

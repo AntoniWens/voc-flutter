@@ -39,7 +39,7 @@ class SenderChat extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 4, top: 4, right: 4),
                     child: Text(
-                      'data.message dawdad wad ad aw',
+                      data.message,
                       style: TextStyle(
                           fontFamily: ColorFontUtil.poppins,
                           fontSize: 14,
@@ -61,7 +61,7 @@ class SenderChat extends StatelessWidget {
                               fontWeight: FontWeight.w400),
                         ),
                         SizedBox(width: 2,),
-                        Obx(() => Icon(data.status == 'PENDING' ? Icons.pending : Icons.done_all, color: Colors.red,size: 14,))
+                        Icon(data.status == 'PENDING' ? Icons.pending : Icons.done_all, color: Colors.red,size: 14,)
 
                       ],
                     ),

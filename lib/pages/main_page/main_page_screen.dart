@@ -1,22 +1,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:voc/pages/home/home_screen.dart';
+import 'package:voc/pages/profile/profile_screen.dart';
 import 'dart:io' show Platform;
 
 import '../../color_font_util.dart';
 import 'controller/main_page_controller.dart';
 
 class MainPageScreen extends GetWidget<MainPageController> {
-  const MainPageScreen({super.key});
+   MainPageScreen({super.key});
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(
             () => controller.model.selectedIndex.value == 0
-            ? Container()
+            ? HomeScreen()
             : controller.model.selectedIndex.value == 1
-            ? Container()
+            ? ProfileScreen()
             : controller.model.selectedIndex.value == 2
             ? Container()
             : Container(),
@@ -33,13 +36,13 @@ class MainPageScreen extends GetWidget<MainPageController> {
                 type: BottomNavigationBarType.fixed,
                 items: [
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.chat_bubble, color: ColorFontUtil.black25.withOpacity(0.6),),
-                    activeIcon: Icon(Icons.chat_bubble, color: ColorFontUtil.red02,),
+                    icon: Icon(Icons.chat, color: ColorFontUtil.black25.withOpacity(0.6),),
+                    activeIcon: Icon(Icons.chat, color: ColorFontUtil.red45,),
                     label: 'home'.tr,
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.person, color: ColorFontUtil.black25.withOpacity(0.6),),
-                    activeIcon: Icon(Icons.person, color: ColorFontUtil.red02,),
+                    activeIcon: Icon(Icons.person, color: ColorFontUtil.red45,),
                     label: 'profile'.tr,
                   ),
                 ],
@@ -48,7 +51,7 @@ class MainPageScreen extends GetWidget<MainPageController> {
                 unselectedItemColor: ColorFontUtil.black25.withOpacity(0.6),
                 selectedLabelStyle: TextStyle(
                     fontFamily: ColorFontUtil.poppins,
-                    color: ColorFontUtil.red02,
+                    color: ColorFontUtil.red45,
                     fontSize: 14),
                 unselectedLabelStyle: TextStyle(
                     fontFamily: ColorFontUtil.poppins,

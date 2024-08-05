@@ -1,5 +1,6 @@
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:voc/popup/send_image.dart';
 import 'package:voc/widget/chat_date.dart';
 import 'package:voc/widget/receiver_chat_reply.dart';
 import 'package:voc/widget/sender_chat_reply.dart';
@@ -28,55 +29,72 @@ class ChatScreen extends GetWidget<ChatController> {
           child: Container(
             padding: const EdgeInsets.only(right: 16),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const SizedBox(
-                  width: 16,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.back(result: 's');
-                  },
-                  child: Icon(
-                    Icons.arrow_circle_left,
-                    color: ColorFontUtil.white,
-                  ),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(25),
-                    child: Image.asset(
-                      'assets/images/user.png',
-                      width: 40,
-                      height: 40,
-                      fit: BoxFit.fill,
-                    )),
-                const SizedBox(
-                  width: 12,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Text(
-                      Get.arguments['full_name'],
-                      style: TextStyle(
-                          fontFamily: ColorFontUtil.poppins,
-                          fontSize: 14,
-                          color: ColorFontUtil.white,
-                          fontWeight: FontWeight.w500),
+                    const SizedBox(
+                      width: 16,
                     ),
-                    Text(
-                      Get.arguments['language'],
-                      style: TextStyle(
-                          fontFamily: ColorFontUtil.poppins,
-                          fontSize: 12,
-                          color: ColorFontUtil.white,
-                          fontWeight: FontWeight.w400),
+                    GestureDetector(
+                      onTap: () {
+                        Get.back(result: 's');
+                      },
+                      child: Icon(
+                        Icons.arrow_circle_left,
+                        color: ColorFontUtil.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: Image.asset(
+                          'assets/images/user.png',
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.fill,
+                        )),
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          Get.arguments['full_name'],
+                          style: TextStyle(
+                              fontFamily: ColorFontUtil.poppins,
+                              fontSize: 14,
+                              color: ColorFontUtil.white,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          Get.arguments['language'],
+                          style: TextStyle(
+                              fontFamily: ColorFontUtil.poppins,
+                              fontSize: 12,
+                              color: ColorFontUtil.white,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+                Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white
+                    ),
+                    child: Icon(
+                      Icons.g_translate_outlined,
+                      color: Colors.grey,
+                      size: 15,
+                    ))
               ],
             ),
           ),
@@ -133,19 +151,18 @@ class ChatScreen extends GetWidget<ChatController> {
                                                   controller.model
                                                       .messages[index - 1].id);
                                             },
-                                  replyTap: () async {
-                                    final ind = controller
-                                        .model.messages
-                                        .indexWhere((e) =>
-                                    e.id ==
-                                        controller
-                                            .model
-                                            .messages[
-                                        index - 1]
-                                            .replyMessageId);
-                                    await controller
-                                        .scrollToItem(ind);
-                                  },
+                                            replyTap: () async {
+                                              final ind = controller
+                                                  .model.messages
+                                                  .indexWhere((e) =>
+                                                      e.id ==
+                                                      controller
+                                                          .model
+                                                          .messages[index - 1]
+                                                          .replyMessageId);
+                                              await controller
+                                                  .scrollToItem(ind);
+                                            },
                                           )
                                         : (controller.model.messages[index - 1]
                                                         .senderId ==
@@ -332,7 +349,11 @@ class ChatScreen extends GetWidget<ChatController> {
                       child: Row(
                         children: [
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              showDialog(context: context, builder: (context) {
+                                return SendImage(onTap: (v) {}, data: '');
+                              });
+                            },
                             child: Image.asset(
                               'assets/images/attach.png',
                               width: 20,
@@ -370,6 +391,7 @@ class ChatScreen extends GetWidget<ChatController> {
                   ? FloatingActionButton.small(
                       onPressed: () {
                         controller.scrollDown();
+
                       },
                       child: Icon(Icons.arrow_downward_outlined),
                       backgroundColor: ColorFontUtil.redF5,

@@ -1,10 +1,10 @@
 
 import 'package:get/get.dart';
 
-import '../../../local_service/all_chat.dart';
-import 'chat.dart';
+import '../../../api_service/model/chat.dart';
+
 
 class HomeModel {
-  RxList<AllChat> allChats = <AllChat>[].obs;
+  RxList<Chat> allChats = <Chat>[].obs;
 
 }

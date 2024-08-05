@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:voc/api_service/model/chat.dart';
 import 'package:voc/preferences.dart';
 
 import '../color_font_util.dart';
@@ -11,7 +12,7 @@ import '../route_management/routes.dart';
 class HomeChat extends StatelessWidget {
   const HomeChat({super.key, required this.allChat, required this.onTap});
 
-  final AllChat allChat;
+  final Chat allChat;
   final VoidCallback onTap;
 
   @override
@@ -38,7 +39,7 @@ class HomeChat extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(allChat.receiverId == Preferences.getUser()['id'] ?allChat.senderFullname : allChat.receiverFullname, style: TextStyle(
+                        Text(allChat.userTwoId == Preferences.getUser()['id'] ? allChat.userOneFullname : allChat.userTwoFullname, style: TextStyle(
                             fontFamily: ColorFontUtil.poppins,
                             fontSize: 16,
                             fontWeight: FontWeight.w500

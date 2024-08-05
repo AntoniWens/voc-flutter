@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -18,7 +16,6 @@ import '../model/chat_model.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class ChatController extends GetxController {
-
   final model = ChatModel();
   final typeController = TextEditingController();
   final autoScrollController = AutoScrollController(axis: Axis.vertical);
@@ -27,8 +24,11 @@ class ChatController extends GetxController {
   FocusNode focusNode = FocusNode();
 
   void allMessage() {
-    LocalService.getAllMessage(Get.arguments['chat_id'])?.listen((e) {
+    LocalService.getAllMessageById(Get.arguments['chat_id'])?.listen((e) {
       model.messages.value = e;
+      Future.delayed(Duration(milliseconds: 500), () {
+        scrollDown();
+      });
       model.messages.refresh();
     });
   }
@@ -42,7 +42,6 @@ class ChatController extends GetxController {
   }
 
   void scrollDown() {
-
     autoScrollController.animateTo(
       autoScrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 500),
@@ -71,53 +70,40 @@ class ChatController extends GetxController {
 
   Future<void> sendMessage() async {
     String id = Util.generateChar(10);
-    await LocalService.addChat(AllChat(Get.arguments['chat_id'], Preferences.getUser()['id'],
-        Preferences.getUser()['full_name'],
-        Preferences.getUser()['language'],
-        Get.arguments['user_id'], Get.arguments['full_name'], Get.arguments['language'], typeController.text, '',Preferences.getUser()['id'] , '', '','PENDING', Util.currentDateTime(true),
-        Util.currentDateTime(false)));
     await LocalService.addMessage(ChatMessage(
-        id,
-        Get.arguments['chat_id'],
-        Preferences.getUser()['id'],
-        typeController.text,
-        '',
-        '',
-        '',
-        Util.currentDateTime(true),
-        Util.currentDateTime(false),'PENDING',model.replyMessageId.value, model.replyMessage.value));
-    final body = SendMessageBody(Get.arguments['user_id'], typeController.text, id, Get.arguments['chat_id'],model.replyMessageId.value);
+        id: id,
+        chatId: Get.arguments['chat_id'],
+        senderId: Preferences.getUser()['id'],
+        message: typeController.text,
+        translationMsg: '',
+        attachment: '',
+        attachmentType: '',
+        date: Util.currentDateTime(true),
+        time: Util.currentDateTime(false),
+        statusMessage: 'PENDING',
+        replyMessageId: model.replyMessageId.value,
+        replyMessage: model.replyMessage.value,
+        status: 'UNDONE'));
+    final body = SendMessageBody(Get.arguments['user_id'], typeController.text,
+        id, Get.arguments['chat_id'], model.replyMessageId.value);
     final response = await chatService.sendMessage(body);
     if (response.runtimeType == SendMessageResponse) {
       final send = response as SendMessageResponse;
       if (!send.error) {
-        await LocalService.addChat(AllChat(
-            response.data.id,
-            response.data.users[0].id,
-            response.data.users[0].fullName,
-            response.data.users[0].language,
-            response.data.users[1].id,
-            response.data.users[1].fullName,
-            response.data.users[1].language,
-            response.data.message.message,
-            response.data.message.translationMsg,
-            response.data.message.senderId,
-            response.data.message.attachment,
-            response.data.message.attachmentType,
-            response.data.message.status,
-            response.data.date,
-            response.data.time));
         await LocalService.addMessage(ChatMessage(
-            send.data.message.id,
-            send.data.id,
-            response.data.message.senderId,
-            send.data.message.message,
-            send.data.message.translationMsg,
-            '',
-            '',
-            response.data.date,
-            response.data.time,
-            response.data.message.status,model.replyMessageId.value, model.replyMessage.value));
+            id: send.data.message.id,
+            chatId: send.data.id,
+            senderId: response.data.message.senderId,
+            message: send.data.message.message,
+            translationMsg: send.data.message.translationMsg,
+            attachment: '',
+            attachmentType: '',
+            date: response.data.date,
+            time: response.data.time,
+            statusMessage: response.data.message.status,
+            replyMessageId: model.replyMessageId.value,
+            replyMessage: model.replyMessage.value,
+            status: 'DONE'));
         typeController.clear();
       } else {
         Fluttertoast.showToast(msg: send.message);
@@ -136,20 +122,16 @@ class ChatController extends GetxController {
   @override
   void onReady() async {
     await LocalService.init();
-    Future.delayed(Duration(milliseconds: 300), () {
-      scrollDown();
-    });
     allMessage();
 
     autoScrollController.addListener(() {
-      model.showScrollBottom.value = autoScrollController.position.pixels < autoScrollController.position.maxScrollExtent;
+      model.showScrollBottom.value = autoScrollController.position.pixels <
+          autoScrollController.position.maxScrollExtent;
       model.showScrollBottom.refresh();
     });
 
     KeyboardVisibilityController().onChange.listen((e) {
-      Future.delayed(Duration(milliseconds: 500), () => {
-        scrollDown()
-      });
+      Future.delayed(Duration(milliseconds: 500), () => {scrollDown()});
     });
 
     super.onReady();
@@ -161,6 +143,7 @@ class ChatController extends GetxController {
     Preferences.saveInChat(true);
     super.onInit();
   }
+
   @override
   void onClose() {
     Preferences.saveInChat(false);

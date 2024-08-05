@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:voc/api_service/chat_service.dart';
 import 'package:voc/local_service/message.dart';
 import 'package:voc/preferences.dart';
 import 'package:voc/route_management/routes.dart';
 
+import '../../../api_service/model/Message.dart';
 import '../../../api_service/response/all_chats_response.dart';
+import '../../../api_service/response/update_message_response.dart';
 import '../../../api_service/response/user_chat_response.dart';
 import '../../../local_service/all_chat.dart';
 import '../../../local_service/local_service.dart';
@@ -13,69 +17,91 @@ class SyncingController extends GetxController {
 
   late ChatService chatService;
 
-  Future<void> allChatsAPI() async {
-    print(Preferences.getToken());
+  Future<void> syncData() async {
+    final messages = await LocalService.getAllMessage();
+    List<Message> updateMsg = [];
+    messages?.forEach((e) {
+      updateMsg.add(Message(id: e.id,
+          chatId: e.chatId,
+          senderId: e.senderId,
+          message: e.message,
+          translationMsg: e.translationMsg,
+          attachment: e.attachment,
+          attachmentType: e.attachmentType,
+          replyMessageId: e.replyMessageId,
+          replyMessage: e.replyMessage,
+          status: e.status,
+          time: e.time,
+          date: e.date));
+    });
+    final data = jsonEncode(updateMsg.map((e) => e.toJson()));
+    final response1 = await chatService.updateMessages(data);
+    if (response1.runtimeType == UpdateMessageResponse) {
+      final updateRes = response1 as UpdateMessageResponse;
+      if (!updateRes.error) {
+        List<ChatMessage> messages = [];
+        for (var e in updateRes.data) {
+          messages.add(ChatMessage(
+              id: e.id,
+              chatId: e.chatId,
+              senderId: e.senderId,
+              message: e.message,
+              translationMsg: e.translationMsg,
+              attachment: e.attachment,
+              attachmentType: e.attachmentType,
+              date: e.date,
+              time: e.time,
+              status: e.status,
+              replyMessageId: e.replyMessageId,
+              replyMessage: e.replyMessage,
+              statusMessage: 'DONE'));
+        }
+        await LocalService.addAllMessage(messages);
+      }
+    }
+
     final response = await chatService.allChats();
     if (response.runtimeType == AllChatsResponse) {
       final allChatRes = response as AllChatsResponse;
       if (!allChatRes.error) {
         List<AllChat> allChats = [];
-        for (var e in allChatRes.data) {
+        List<ChatMessage> messages = [];
+        for (var e in allChatRes.data.chats) {
           allChats.add(AllChat(
-              e.id,
-              e.users[0].id,
-              e.users[0].fullName,
-              e.users[0].language,
-              e.users[1].id,
-              e.users[1].fullName,
-              e.users[1].language,
-              e.message.message,
-              e.message.translationMsg,
-              e.message.senderId,
-              e.message.attachment,
-              e.message.attachmentType,
-              e.message.status,
-              e.date,
-              e.time));
+              id: e.id,
+              userOneId: e.users[0].id,
+              userOneFullname: e.users[0].fullName,
+              userOneLanguage: e.users[0].language,
+              userTwoId: e.users[1].id,
+              userTwoFullname: e.users[1].fullName,
+              userTwoLanguage: e.users[1].language));
         }
-        if(allChats.isNotEmpty) {
-          await LocalService.addAllChats(allChats);
+        for (var e in allChatRes.data.messages) {
+          messages.add(ChatMessage(
+              id: e.id,
+              chatId: e.chatId,
+              senderId: e.senderId,
+              message: e.message,
+              translationMsg: e.translationMsg,
+              attachment: e.attachment,
+              attachmentType: e.attachmentType,
+              date: e.date,
+              time: e.time,
+              status: e.status,
+              replyMessageId: e.replyMessageId,
+              replyMessage: e.replyMessage,
+              statusMessage: 'DONE'));
         }
+        await LocalService.addAllMessage(messages);
+        await LocalService.addAllChats(allChats);
       }
     }
   }
 
-  Future<void> userChats() async {
-    final response = await chatService.userChats();
-    if (response.runtimeType == UserChatResponse) {
-      final allRes = response as UserChatResponse;
-      if (!allRes.error) {
-        List<ChatMessage> chatMessage = [];
-        for (var e in allRes.data) {
-          chatMessage.add(ChatMessage(
-              e.id,
-              e.chatId,
-              e.senderId,
-              e.message,
-              e.translationMsg,
-              e.attachment,
-              e.attachmentType,
-              e.date,
-              e.time,
-            e.status,e.replyMessageId, e.replyMessage));
-        }
-        if (chatMessage.isNotEmpty) {
-          await LocalService.addAllMessage(chatMessage);
-        }
-        Get.offAllNamed(Routes.home, arguments: 'da');
-      }
-    }
-  }
   @override
   void onReady() async {
     await LocalService.init();
-    await allChatsAPI();
-    await userChats();
+    await syncData();
     super.onReady();
   }
 

@@ -64,8 +64,16 @@ class LocalService {
     await _database?.messageDao.addMessage(message);
   }
 
-  static Stream<List<ChatMessage>>? getAllMessage(String chatId) {
-    return _database?.messageDao.getAllMessage(chatId);
+  static Stream<List<ChatMessage>>? getAllMessageById(String chatId) {
+    return _database?.messageDao.getAllMessageById(chatId);
+  }
+
+  static Future<ChatMessage>? getLastMessage(String chatId) {
+    return _database?.messageDao.getLastMessage(chatId);
+  }
+
+  static Future<List<ChatMessage>>? getAllMessage() {
+    return _database?.messageDao.getAllMessage();
   }
 
   static Future<void> deleteMessage(String id) async {

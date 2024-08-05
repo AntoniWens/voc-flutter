@@ -14,18 +14,20 @@ class ChatMessage {
   String attachmentType;
   String date;
   String time;
-  String status;
+  String statusMessage;
   String replyMessageId;
   String replyMessage;
+  String status;
 
-  ChatMessage(
-      this.id,
-      this.chatId,
-      this.senderId,
-      this.message,
-      this.translationMsg,
-      this.attachment,
-      this.attachmentType,
-      this.date,
-      this.time, this.status, this.replyMessageId, this.replyMessage);
+  ChatMessage({
+      required this.id,
+      required this.chatId,
+      required this.senderId,
+      required this.message,
+      required this.translationMsg,
+      required this.attachment,
+      required this.attachmentType,
+      required this.date,
+      required this.time, required this.statusMessage, required this.replyMessageId, required this.replyMessage, required this.status,});
+
 }

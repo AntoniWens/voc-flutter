@@ -50,6 +50,24 @@ class ChatService {
     }
   }
 
+  Future<Object> updateMessages(String data) async {
+    try {
+      final response =  await http.post(Uri.parse('${Configuration.baseUrl}api/mobile_api/chat/update-message'),body: {'data':data}, headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      });
+      if (kDebugMode) {
+        print('response update_message : ${response.body}');
+      }
+      return SendMessageResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return e.toString();
+    }
+  }
+
   Future<Object> sendMessage(SendMessageBody body) async {
     try {
       final response =  await http.post(Uri.parse('${Configuration.baseUrl}api/mobile_api/chat/send-message'),body: body.toJson(), headers: {

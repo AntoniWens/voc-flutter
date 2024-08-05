@@ -1,9 +1,10 @@
+
 import '../model/Message.dart';
 
 class AllChatsResponse {
   bool error;
   String message;
-  List<WData> data;
+  WData data;
 
   AllChatsResponse({
     required this.error,
@@ -14,45 +15,53 @@ class AllChatsResponse {
   factory AllChatsResponse.fromJson(Map<String, dynamic> json) => AllChatsResponse(
     error: json["error"],
     message: json["message"],
-    data: List<WData>.from(json["data"].map((x) => WData.fromJson(x))),
+    data: json["data"],
   );
 
   Map<String, dynamic> toJson() => {
     "error": error,
     "message": message,
-  "data": List<dynamic>.from(data.map((x) => x.toJson())),
+  "data": data.toJson(),
   };
 }
 
 class WData {
-  String id;
-  Message message;
-  List<User> users;
-  String date;
-  String time;
+  List<ChatM> chats;
+  List<Message> messages;
 
   WData({
-    required this.id,
-    required this.message,
-    required this.users,
-    required this.date,
-    required this.time
+    required this.chats,
+    required this.messages,
   });
 
   factory WData.fromJson(Map<String, dynamic> json) => WData(
+    chats: List<ChatM>.from(json["chats"].map((x) => ChatM.fromJson(x))),
+    messages: List<Message>.from(json["messages"].map((x) => Message.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "chats": List<dynamic>.from(chats.map((x) => x.toJson())),
+    "messages": List<dynamic>.from(messages.map((x) => x.toJson())),
+  };
+}
+
+class ChatM {
+  String id;
+  List<User> users;
+
+  ChatM({
+    required this.id,
+    required this.users,
+  });
+
+  factory ChatM.fromJson(Map<String, dynamic> json) => ChatM(
     id: json["id"],
-    message: Message.fromJson(json["message"]),
     users: List<User>.from(json["users"].map((x) => User.fromJson(x))),
-    date: json["date"],
-    time: json["time"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "message": message.toJson(),
     "users": List<dynamic>.from(users.map((x) => x.toJson())),
-    "date": date,
-    "time": time,
   };
 }
 

@@ -13,8 +13,14 @@ abstract class MessageDao {
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> addMessage(ChatMessage message);
 
+  @Query('SELECT * FROM ChatMessage')
+  Future<List<ChatMessage>> getAllMessage();
+
   @Query('SELECT * FROM ChatMessage WHERE chatId =:chatId ORDER BY date,time ASC')
-  Stream<List<ChatMessage>> getAllMessage(String chatId);
+  Stream<List<ChatMessage>> getAllMessageById(String chatId);
+
+  @Query('SELECT * FROM ChatMessage WHERE chatId =:chatId ORDER BY date,time DESC LIMIT 1')
+  Future<ChatMessage> getLastMessage(String chatId);
 
   @Query('DELETE FROM ChatMessage WHERE id =:id')
   Future<void> deleteMessage(String id);
