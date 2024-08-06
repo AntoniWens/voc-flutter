@@ -3,10 +3,13 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:voc/api_service/chat_service.dart';
+import 'package:voc/api_service/model/sender.dart';
+import 'package:voc/fcm_service.dart';
+import 'package:voc/notification_service.dart';
 import 'package:voc/preferences.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../../api_service/model/Message.dart';
+import '../../../api_service/model/message.dart';
 import '../../../api_service/response/all_chats_response.dart';
 import '../../../api_service/response/update_message_response.dart';
 import '../../../api_service/response/websocket_response.dart';
@@ -31,10 +34,9 @@ class MainPageController extends GetxController {
     messages?.forEach((e) {
       updateMsg.add(Message(id: e.id,
           chatId: e.chatId,
-          senderId: e.senderId,
+          sender: Sender(id: e.senderId, fullName: '', photoUrl: ''),
           message: e.message,
           translationMsg: e.translationMsg,
-          attachment: e.attachment,
           attachmentType: e.attachmentType,
           replyMessageId: e.replyMessageId,
           replyMessage: e.replyMessage,
@@ -52,10 +54,9 @@ class MainPageController extends GetxController {
           messages.add(ChatMessage(
               id: e.id,
               chatId: e.chatId,
-              senderId: e.senderId,
+              senderId: e.sender.id,
               message: e.message,
               translationMsg: e.translationMsg,
-              attachment: e.attachment,
               attachmentType: e.attachmentType,
               date: e.date,
               time: e.time,
@@ -88,10 +89,9 @@ class MainPageController extends GetxController {
           messages.add(ChatMessage(
               id: e.id,
               chatId: e.chatId,
-              senderId: e.senderId,
+              senderId: e.sender.id,
               message: e.message,
               translationMsg: e.translationMsg,
-              attachment: e.attachment,
               attachmentType: e.attachmentType,
               date: e.date,
               time: e.time,
@@ -128,10 +128,9 @@ class MainPageController extends GetxController {
           await LocalService.addMessage(ChatMessage(
               id: response.data!.message!.id,
               chatId: response.data!.message!.chatId,
-              senderId: response.data!.message!.senderId,
+              senderId: response.data!.message!.sender.id,
               message: response.data!.message!.message,
               translationMsg: response.data!.message!.translationMsg,
-              attachment: response.data!.message!.attachment,
               attachmentType: response.data!.message!.attachmentType,
               date: response.data!.date,
               time: response.data!.time,
@@ -144,10 +143,9 @@ class MainPageController extends GetxController {
             List<Message> updateMsg = [];
             updateMsg.add(Message(id: response.data!.message!.id,
                 chatId: response.data!.message!.chatId,
-                senderId: response.data!.message!.senderId,
+                sender: response.data!.message!.sender,
                 message: response.data!.message!.message,
                 translationMsg: response.data!.message!.translationMsg,
-                attachment: response.data!.message!.attachment,
                 attachmentType: response.data!.message!.attachmentType,
                 replyMessageId: response.data!.message!.replyMessageId,
                 replyMessage: response.data!.message!.replyMessage,
@@ -164,10 +162,9 @@ class MainPageController extends GetxController {
                   messages.add(ChatMessage(
                       id: e.id,
                       chatId: e.chatId,
-                      senderId: e.senderId,
+                      senderId: e.sender.id,
                       message: e.message,
                       translationMsg: e.translationMsg,
-                      attachment: e.attachment,
                       attachmentType: e.attachmentType,
                       date: e.date,
                       time: e.time,
@@ -186,13 +183,22 @@ class MainPageController extends GetxController {
   }
 
   @override
+  void onReady() async {
+    FcmService.onMessage().listen((e) {
+      NotificationService.cancelNotifications();
+    });
+    NotificationService.checkNotificationPermission();
+    if (Get.arguments == null) {
+      await syncData();
+    }
+    super.onReady();
+  }
+
+  @override
   void onInit() async {
     await LocalService.init();
     chatService = ChatService(token: Preferences.getToken());
     createSocket();
-    if (Get.arguments == null) {
-      await syncData();
-    }
     super.onInit();
   }
 }

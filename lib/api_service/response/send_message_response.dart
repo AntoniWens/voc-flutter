@@ -1,4 +1,4 @@
-import 'package:voc/api_service/model/Message.dart';
+import 'package:voc/api_service/model/message.dart';
 
 import '../model/user.dart';
 

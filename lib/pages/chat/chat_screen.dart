@@ -1,5 +1,4 @@
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:voc/popup/send_image.dart';
 import 'package:voc/widget/chat_date.dart';
 import 'package:voc/widget/receiver_chat_reply.dart';

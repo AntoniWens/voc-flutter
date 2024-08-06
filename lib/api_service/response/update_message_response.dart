@@ -1,4 +1,4 @@
-import '../model/Message.dart';
+import '../model/message.dart';
 
 class UpdateMessageResponse {
   bool error;

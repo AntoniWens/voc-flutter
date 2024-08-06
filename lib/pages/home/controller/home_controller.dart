@@ -1,19 +1,9 @@
-import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:voc/api_service/model/Message.dart';
-import 'package:voc/api_service/model/update_message.dart';
-import 'package:voc/api_service/response/update_message_response.dart';
-import 'package:voc/api_service/response/websocket_response.dart';
-import 'package:voc/configuration.dart';
-import 'package:voc/local_service/message.dart';
 import 'package:voc/preferences.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../api_service/chat_service.dart';
 import '../../../api_service/model/chat.dart';
-import '../../../api_service/response/all_chats_response.dart';
-import '../../../local_service/all_chat.dart';
 import '../../../local_service/local_service.dart';
 import '../model/home_model.dart';
 
@@ -37,7 +27,6 @@ class HomeController extends GetxController {
               userTwoLanguage: a.userTwoLanguage,
               lastMessage: msg.message,
               translationMsg: msg.translationMsg,
-              attachment: msg.attachment,
               attachmentType: msg.attachmentType,
               messageStatus: msg.status,
               date: msg.date,
@@ -65,7 +54,6 @@ class HomeController extends GetxController {
               userTwoLanguage: a.userTwoLanguage,
               lastMessage: msg.message,
               translationMsg: msg.translationMsg,
-              attachment: msg.attachment,
               attachmentType: msg.attachmentType,
               messageStatus: msg.statusMessage,
               date: msg.date,

@@ -1,5 +1,5 @@
 
-import '../model/Message.dart';
+import '../model/message.dart';
 
 class AllChatsResponse {
   bool error;

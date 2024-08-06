@@ -2,18 +2,24 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:voc/fcm_service.dart';
 import 'package:voc/preferences.dart';
 import 'package:voc/route_management/app_routes.dart';
 import 'package:voc/route_management/routes.dart';
 
 import 'app_translate.dart';
 import 'firebase_options.dart';
+import 'notification_service.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FcmService.onBackgroundMessage();
+  await NotificationService.initializeLocalNotifications();
   await Preferences.init();
 
   var login = false;

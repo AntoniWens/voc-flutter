@@ -8,7 +8,6 @@ class Chat {
   String userTwoLanguage;
   String lastMessage;
   String translationMsg;
-  String attachment;
   String attachmentType;
   String messageStatus;
   String date;
@@ -24,7 +23,6 @@ class Chat {
       required this.userTwoLanguage,
       required this.lastMessage,
       required this.translationMsg,
-      required this.attachment,
       required this.attachmentType,
     required this.messageStatus,
       required this.date,
