@@ -1,0 +1,113 @@
+import 'dart:ui';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:voc/util.dart';
+
+import '../color_font_util.dart';
+import '../pages/chat/model/chatting.dart';
+
+class SenderImageChat extends StatelessWidget {
+  const SenderImageChat({super.key, });
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 32, right: 8, bottom: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            width: Util.queryImageSize(context, 0, 0)['width']! + 16,
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: ColorFontUtil.red45.withOpacity(0.2), ),
+              color: Colors.white
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    //replyTap.call();
+                  },
+                  child: Container(
+                    width: 150,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        color: ColorFontUtil.grayE8.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          Get.arguments['full_name'],
+                          style: TextStyle(
+                              fontFamily: ColorFontUtil.poppins,
+                              color: ColorFontUtil.red15,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          'data.replyMessage',
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontFamily: ColorFontUtil.poppins,
+                            color: ColorFontUtil.black25,
+                            fontSize: 12,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: CachedNetworkImage(
+                    imageUrl: 'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+                    placeholder: (_,__) => Image.asset('assets/images/placeholder_chat.png', width: 40,),
+                    errorWidget: (_,__,___) => Image.asset('assets/images/placeholder_chat.png', width: 40,),
+                    fit: BoxFit.cover,
+                    width: Util.queryImageSize(context, 0, 0)['width']!,
+                    height: Util.queryImageSize(context, 0, 0)['height']!,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    'data.message dawdwad ad awd a',
+                    style: TextStyle(
+                        fontFamily: ColorFontUtil.poppins,
+                        fontSize: 14,
+                        color: ColorFontUtil.black25,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '22:10',
+                      style: TextStyle(
+                          fontFamily: ColorFontUtil.poppins,
+                          fontSize: 10,
+                          color: ColorFontUtil.black25.withOpacity(0.9),
+                          fontWeight: FontWeight.w400),
+                    ),
+                    SizedBox(width: 4,),
+                    SizedBox(width:10, height: 10,child: CircularProgressIndicator(strokeWidth: 2.0,color: ColorFontUtil.red02,))
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
