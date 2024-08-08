@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:voc/api_service/response/all_chats_response.dart';
 import 'package:voc/api_service/response/send_message_response.dart';
+import 'package:voc/api_service/response/update_message_response.dart';
 import 'package:voc/api_service/response/user_chat_response.dart';
 
 import '../configuration.dart';
@@ -59,7 +60,7 @@ class ChatService {
       if (kDebugMode) {
         print('response update_message : ${response.body}');
       }
-      return SendMessageResponse.fromJson(jsonDecode(response.body));
+      return UpdateMessageResponse.fromJson(jsonDecode(response.body));
     } catch (e) {
       if (kDebugMode) {
         print(e);

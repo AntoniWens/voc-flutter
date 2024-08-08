@@ -3,6 +3,7 @@ import 'package:voc/popup/send_image.dart';
 import 'package:voc/widget/chat_date.dart';
 import 'package:voc/widget/receiver_chat_reply.dart';
 import 'package:voc/widget/sender_chat_reply.dart';
+import 'package:voc/widget/sender_image_chat.dart';
 
 import '../../color_font_util.dart';
 import '../../preferences.dart';
@@ -113,10 +114,10 @@ class ChatScreen extends GetWidget<ChatController> {
                           itemCount: controller.model.messages.length + 1,
                           separatorBuilder: (context, index) {
                             return index == 0
-                                ? ChatDate()
+                                ? ChatDate(date: controller.model.messages[index].date,)
                                 : controller.model.messages[index - 1].date !=
                                         controller.model.messages[index].date
-                                    ? ChatDate()
+                                    ? ChatDate(date: controller.model.messages[index - 1].date,)
                                     : SizedBox();
                           },
                           itemBuilder: (context, index) {
@@ -146,9 +147,19 @@ class ChatScreen extends GetWidget<ChatController> {
                                                   controller
                                                       .model
                                                       .messages[index - 1]
-                                                      .message,
+                                                      .senderId == Preferences.getUser()['id'] ? controller
+                                                      .model
+                                                      .messages[index - 1]
+                                                      .message : controller
+                                                      .model
+                                                      .messages[index - 1]
+                                                      .translationMsg,
                                                   controller.model
-                                                      .messages[index - 1].id);
+                                                      .messages[index - 1].id,controller
+                                                  .model
+                                                  .messages[
+                                              index - 1]
+                                                  .senderId);
                                             },
                                             replyTap: () async {
                                               final ind = controller
@@ -180,11 +191,21 @@ class ChatScreen extends GetWidget<ChatController> {
                                                       controller
                                                           .model
                                                           .messages[index - 1]
-                                                          .message,
+                                                          .senderId == Preferences.getUser()['id'] ? controller
+                                                          .model
+                                                          .messages[index - 1]
+                                                          .message : controller
+                                                          .model
+                                                          .messages[index - 1]
+                                                          .translationMsg,
                                                       controller
                                                           .model
                                                           .messages[index - 1]
-                                                          .id);
+                                                          .id,controller
+                                                      .model
+                                                      .messages[
+                                                  index - 1]
+                                                      .senderId);
                                                 },
                                                 replyTap: () async {
                                                   final ind = controller
@@ -214,16 +235,18 @@ class ChatScreen extends GetWidget<ChatController> {
                                                         .value,
                                                     onReply: () {
                                                       controller.showReply(
+                                                          controller.model.messages[index - 1].senderId == Preferences.getUser()['id'] ? controller.model.messages[index - 1].message : controller.model
+                                                              .messages[index - 1]
+                                                              .translationMsg,
                                                           controller
                                                               .model
                                                               .messages[
                                                                   index - 1]
-                                                              .message,
-                                                          controller
-                                                              .model
-                                                              .messages[
-                                                                  index - 1]
-                                                              .id);
+                                                              .id,controller
+                                                          .model
+                                                          .messages[
+                                                      index - 1]
+                                                          .senderId);
                                                     },
                                                   )
                                                 : SenderChat(
@@ -233,17 +256,27 @@ class ChatScreen extends GetWidget<ChatController> {
                                                       controller.showReply(
                                                           controller
                                                               .model
-                                                              .messages[
-                                                                  index - 1]
-                                                              .message,
+                                                              .messages[index - 1]
+                                                              .senderId == Preferences.getUser()['id'] ? controller
+                                                              .model
+                                                              .messages[index - 1]
+                                                              .message : controller
+                                                              .model
+                                                              .messages[index - 1]
+                                                              .translationMsg,
                                                           controller
                                                               .model
                                                               .messages[
                                                                   index - 1]
-                                                              .id);
+                                                              .id, controller
+                                                          .model
+                                                          .messages[
+                                                      index - 1]
+                                                              .senderId);
                                                     },
                                                   ))
                                     : SizedBox());
+
                           }),
                     )),
               ),
@@ -300,7 +333,7 @@ class ChatScreen extends GetWidget<ChatController> {
                                 ),
                               ),
                               onTap: () {
-                                controller.showReply('', '');
+                                controller.showReply('', '', '');
                               },
                             )
                           ],

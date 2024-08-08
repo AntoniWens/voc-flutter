@@ -7,9 +7,11 @@ class Chat {
   String userTwoFullname;
   String userTwoLanguage;
   String lastMessage;
+  String senderId;
   String translationMsg;
   String attachmentType;
   String messageStatus;
+
   String date;
   String time;
 
@@ -22,6 +24,7 @@ class Chat {
       required this.userTwoFullname,
       required this.userTwoLanguage,
       required this.lastMessage,
+    required this.senderId,
       required this.translationMsg,
       required this.attachmentType,
     required this.messageStatus,

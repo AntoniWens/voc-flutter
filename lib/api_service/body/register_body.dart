@@ -23,5 +23,6 @@ class RegisterBody {
     'role': role,
     'language': language,
     'nationality': nationality,
+    'token': token
   };
 }

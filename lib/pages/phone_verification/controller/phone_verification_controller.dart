@@ -58,7 +58,7 @@ class PhoneVerificationController extends GetxController {
       if (!regisRes.error) {
           await Preferences.saveToken(regisRes.data!.token);
           await Preferences.saveUser(regisRes.data!);
-          Get.offAllNamed(Routes.home);
+          Get.offAllNamed(Routes.mainPage);
       } else {
         Fluttertoast.showToast(msg: regisRes.message);
       }

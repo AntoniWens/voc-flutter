@@ -25,12 +25,12 @@ class HomeController extends GetxController {
               userTwoId: a.userTwoId,
               userTwoFullname: a.userTwoFullname,
               userTwoLanguage: a.userTwoLanguage,
-              lastMessage: msg.message,
+              lastMessage: Preferences.getUser()['id'] == msg.senderId ? msg.message : msg.translationMsg,
               translationMsg: msg.translationMsg,
               attachmentType: msg.attachmentType,
-              messageStatus: msg.status,
+              messageStatus: msg.statusMessage,
               date: msg.date,
-              time: msg.time));
+              time: msg.time, senderId: msg.senderId));
         }
         model.allChats.value = chats;
         model.allChats.refresh();
@@ -52,12 +52,12 @@ class HomeController extends GetxController {
               userTwoId: a.userTwoId,
               userTwoFullname: a.userTwoFullname,
               userTwoLanguage: a.userTwoLanguage,
-              lastMessage: msg.message,
+              lastMessage: Preferences.getUser()['id'] == msg.senderId ? msg.message : msg.translationMsg,
               translationMsg: msg.translationMsg,
               attachmentType: msg.attachmentType,
               messageStatus: msg.statusMessage,
               date: msg.date,
-              time: msg.time));
+              time: msg.time, senderId: msg.senderId));
         }
       }
       model.allChats.value = chats;
@@ -70,7 +70,6 @@ class HomeController extends GetxController {
   @override
   void onReady() {
     listenAllChats();
-
     super.onReady();
   }
 

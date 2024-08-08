@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../color_font_util.dart';
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField({super.key, required this.hintText, required this.label, this.controller, this.prefixIcon, this.readOnly,  this.obscure, this.suffixIcon, required this.textInputType, this.errorText, this.onChanged});
+  const CustomTextField({super.key, required this.hintText, required this.label, this.controller, this.prefixIcon, this.readOnly,  this.obscure, this.suffixIcon, required this.textInputType, this.errorText, this.onChanged, this.inputFormatter});
 
   final String hintText;
   final String label;
@@ -15,6 +16,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType textInputType;
   final String? errorText;
   final Function(String)? onChanged;
+  final List<TextInputFormatter>? inputFormatter;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,7 @@ class CustomTextField extends StatelessWidget {
             readOnly: readOnly ?? false,
             keyboardType: textInputType,
             onChanged: onChanged,
+            inputFormatters: inputFormatter,
             decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: TextStyle(

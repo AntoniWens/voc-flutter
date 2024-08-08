@@ -48,8 +48,8 @@ class HomeChat extends StatelessWidget {
                         Text(allChat.lastMessage, maxLines: 1, style: TextStyle(
                             fontFamily: ColorFontUtil.poppins,
                             fontSize: 14,
-                            color: allChat.messageStatus == 'DELIVERED' ? Colors.black :ColorFontUtil.black25.withOpacity(0.8),
-                            fontWeight: allChat.messageStatus == 'DELIVERED' ? FontWeight.w500 :FontWeight.w400
+                            color: allChat.senderId == Preferences.getUser()['id'] ? ColorFontUtil.black25.withOpacity(0.8): (allChat.messageStatus == 'DELIVERED' ? Colors.black :ColorFontUtil.black25.withOpacity(0.8)),
+                            fontWeight: allChat.senderId == Preferences.getUser()['id'] ?FontWeight.w400 :(allChat.messageStatus == 'DELIVERED' ? FontWeight.w500 :FontWeight.w400)
                         ),),
                       ],
                     ),

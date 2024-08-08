@@ -31,9 +31,9 @@ class ConnectivityService extends GetxService {
           replyMessage: e.replyMessage,
           status: e.status,
           time: e.time,
-          date: e.date));
+          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
     });
-    final data = jsonEncode(updateMsg.map((e) => e.toJson()));
+    final data = jsonEncode(updateMsg);
     final response1 = await chatService.updateMessages(data);
     if (response1.runtimeType == UpdateMessageResponse) {
       final updateRes = response1 as UpdateMessageResponse;
@@ -49,10 +49,10 @@ class ConnectivityService extends GetxService {
               attachmentType: e.attachmentType,
               date: e.date,
               time: e.time,
-              status: e.status,
+              statusMessage: e.status,
               replyMessageId: e.replyMessageId,
               replyMessage: e.replyMessage,
-              statusMessage: 'DONE'));
+              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
         }
         await LocalService.addAllMessage(messages);
       }

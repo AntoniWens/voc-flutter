@@ -12,7 +12,7 @@ class Sender {
   factory Sender.fromJson(Map<String, dynamic> json) => Sender(
     id: json["id"],
     fullName: json["full_name"],
-    photoUrl: json["photo_url"],
+    photoUrl: json["photo_url"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {

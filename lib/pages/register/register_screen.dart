@@ -2,6 +2,7 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../app_bar.dart';
 import '../../color_font_util.dart';
@@ -60,6 +61,9 @@ class RegisterScreen extends GetWidget<RegisterController> {
                       Obx(
                         () => CustomTextField(
                           controller: controller.phoneController,
+                          inputFormatter: [
+                            FilteringTextInputFormatter.allow(RegExp('[0-9]')),
+                          ],
                           prefixIcon: Padding(
                               padding: const EdgeInsets.all(15),
                               child: RichText(
@@ -163,7 +167,6 @@ class RegisterScreen extends GetWidget<RegisterController> {
                       ),
                       CustomTextField(
                         controller: controller.fullNameController,
-
                         hintText: 'full_name_hint'.tr,
                         label: 'full_name_label'.tr,
                         textInputType: TextInputType.text,
@@ -232,6 +235,7 @@ class RegisterScreen extends GetWidget<RegisterController> {
                       Obx(
                         () => CustomDropDown(
                           onTap: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
                             showModalBottomSheet(
                                 context: context,
                                 backgroundColor: ColorFontUtil.white,
@@ -240,6 +244,7 @@ class RegisterScreen extends GetWidget<RegisterController> {
                                 builder: (context) {
                                   return SelectingRole(
                                       onTap: (value, id) {
+                                        FocusManager.instance.primaryFocus?.unfocus();
                                         controller.setSelectedRole(value, id);
                                         controller.checkEmpty();
                                       },
@@ -257,6 +262,7 @@ class RegisterScreen extends GetWidget<RegisterController> {
                       Obx(
                         () => CustomDropDown(
                           onTap: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
                             showModalBottomSheet(
                                 context: context,
                                 backgroundColor: ColorFontUtil.white,
@@ -265,6 +271,7 @@ class RegisterScreen extends GetWidget<RegisterController> {
                                 builder: (context) {
                                   return SelectingLanguage(
                                       onTap: (value, id) {
+                                        FocusManager.instance.primaryFocus?.unfocus();
                                         controller.setSelectedLanguage(
                                             value, id);
                                         controller.checkEmpty();
@@ -282,6 +289,7 @@ class RegisterScreen extends GetWidget<RegisterController> {
                       ),
                       Obx(() => CustomDropDown(
                             onTap: () {
+                              FocusManager.instance.primaryFocus?.unfocus();
                               showModalBottomSheet(
                                   context: context,
                                   backgroundColor: ColorFontUtil.white,
@@ -290,6 +298,7 @@ class RegisterScreen extends GetWidget<RegisterController> {
                                   builder: (context) {
                                     return SelectingNation(
                                         onTap: (value, id) {
+                                          FocusManager.instance.primaryFocus?.unfocus();
                                           controller.setSelectedNation(
                                               value, id);
                                           controller.checkEmpty();

@@ -35,7 +35,7 @@ class LoginController extends GetxController {
   Future<void> login() async {
     model.isLoading.value = true;
     final token = await FirebaseMessaging.instance.getToken();
-    final response = await authService.login(model.phoneCode.toString(), phoneController.text, passwordController.text, token.toString());
+    final response = await authService.login(model.phoneCode.toString(), phoneController.text.replaceFirst(RegExp(r'^0+'), ""), passwordController.text, token.toString());
     if (response.runtimeType == LoginResponse) {
       final login = response as LoginResponse;
       if (!login.error) {

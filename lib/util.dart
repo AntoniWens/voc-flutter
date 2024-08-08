@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
@@ -23,7 +24,22 @@ class Util {
         length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
   }
 
-  static String currentDateTime(bool isDate) {
-    return DateFormat(isDate ? 'dd MMMM yyyy' : 'HH:MM').format(DateTime.now());
+  static Map<String, dynamic> currentDateTime() {
+    DateTime dateTime = DateTime.now();
+    String date = DateFormat('dd MMMM yy').format(dateTime);
+    String time = DateFormat('HH:mm').format(dateTime);
+    String timeStamp = DateFormat('yyyy-mm-dd HH:mm').format(dateTime);
+    return {
+      'date': date,
+      'time': time,
+      'time_stamp': timeStamp
+    };
+  }
+
+  static Map<String, double> queryImageSize(BuildContext context, double width, double height) {
+    double fullWidth = MediaQuery.sizeOf(context).width - (MediaQuery.sizeOf(context).width * 0.4);
+    double realWidth = width > fullWidth ? fullWidth : width;
+    double realHeight = (width == height) ? realWidth : (height < 260) ? height : 260;
+    return {'width': realWidth, 'height': realHeight};
   }
 }

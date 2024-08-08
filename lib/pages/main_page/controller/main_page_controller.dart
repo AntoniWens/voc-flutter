@@ -6,9 +6,12 @@ import 'package:voc/api_service/chat_service.dart';
 import 'package:voc/api_service/model/sender.dart';
 import 'package:voc/fcm_service.dart';
 import 'package:voc/notification_service.dart';
+import 'package:voc/pages/home/controller/home_controller.dart';
 import 'package:voc/preferences.dart';
+import 'package:voc/util.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../../../api_service/model/chat.dart';
 import '../../../api_service/model/message.dart';
 import '../../../api_service/response/all_chats_response.dart';
 import '../../../api_service/response/update_message_response.dart';
@@ -40,32 +43,34 @@ class MainPageController extends GetxController {
           attachmentType: e.attachmentType,
           replyMessageId: e.replyMessageId,
           replyMessage: e.replyMessage,
-          status: e.status,
+          status: e.statusMessage,
           time: e.time,
-          date: e.date));
+          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
     });
-    final data = jsonEncode(updateMsg.map((e) => e.toJson()));
-    final response1 = await chatService.updateMessages(data);
-    if (response1.runtimeType == UpdateMessageResponse) {
-      final updateRes = response1 as UpdateMessageResponse;
-      if (!updateRes.error) {
-        List<ChatMessage> messages = [];
-        for (var e in updateRes.data) {
-          messages.add(ChatMessage(
-              id: e.id,
-              chatId: e.chatId,
-              senderId: e.sender.id,
-              message: e.message,
-              translationMsg: e.translationMsg,
-              attachmentType: e.attachmentType,
-              date: e.date,
-              time: e.time,
-              status: e.status,
-              replyMessageId: e.replyMessageId,
-              replyMessage: e.replyMessage,
-              statusMessage: 'DONE'));
+    if (updateMsg.isNotEmpty) {
+      final data = jsonEncode(updateMsg);
+      final response1 = await chatService.updateMessages(data);
+      if (response1.runtimeType == UpdateMessageResponse) {
+        final updateRes = response1 as UpdateMessageResponse;
+        if (!updateRes.error) {
+          List<ChatMessage> messages = [];
+          for (var e in updateRes.data) {
+            messages.add(ChatMessage(
+                id: e.id,
+                chatId: e.chatId,
+                senderId: e.sender.id,
+                message: e.message,
+                translationMsg: e.translationMsg,
+                attachmentType: e.attachmentType,
+                date: e.date,
+                time: e.time,
+                statusMessage: e.status,
+                replyMessageId: e.replyMessageId,
+                replyMessage: e.replyMessage,
+                status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+          }
+          await LocalService.addAllMessage(messages);
         }
-        await LocalService.addAllMessage(messages);
       }
     }
 
@@ -83,7 +88,7 @@ class MainPageController extends GetxController {
               userOneLanguage: e.users[0].language,
               userTwoId: e.users[1].id,
               userTwoFullname: e.users[1].fullName,
-              userTwoLanguage: e.users[1].language));
+              userTwoLanguage: e.users[1].language, trigger: 'k'));
         }
         for (var e in allChatRes.data.messages) {
           messages.add(ChatMessage(
@@ -95,10 +100,10 @@ class MainPageController extends GetxController {
               attachmentType: e.attachmentType,
               date: e.date,
               time: e.time,
-              status: e.status,
+              statusMessage: e.status,
               replyMessageId: e.replyMessageId,
               replyMessage: e.replyMessage,
-              statusMessage: 'DONE'));
+              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
         }
         await LocalService.addAllMessage(messages);
         await LocalService.addAllChats(allChats);
@@ -116,6 +121,7 @@ class MainPageController extends GetxController {
     }));
 
     channel.stream.listen((e) async {
+      print(e);
       final res = jsonDecode(e);
       if (res['event'] == 'pusher:ping') {
         channel.sink.add(jsonEncode(
@@ -126,33 +132,33 @@ class MainPageController extends GetxController {
         if (jsonDecode(res['data'])['result'] != null) {
           final response = WebsocketResponse.fromJson(jsonDecode(e));
           await LocalService.addMessage(ChatMessage(
-              id: response.data!.message!.id,
-              chatId: response.data!.message!.chatId,
-              senderId: response.data!.message!.sender.id,
-              message: response.data!.message!.message,
-              translationMsg: response.data!.message!.translationMsg,
-              attachmentType: response.data!.message!.attachmentType,
+              id: response.data!.id,
+              chatId: response.data!.chatId,
+              senderId: response.data!.sender.id,
+              message: response.data!.message,
+              translationMsg: response.data!.translationMsg,
+              attachmentType: response.data!.attachmentType,
               date: response.data!.date,
               time: response.data!.time,
-              statusMessage: response.data!.message!.status,
-              replyMessageId: response.data!.message!.replyMessageId,
-              replyMessage: response.data!.message!.replyMessage,
-              status: 'DONE'));
+              statusMessage: response.data!.status,
+              replyMessageId: response.data!.replyMessageId,
+              replyMessage: response.data!.replyMessage,
+              status: 'DONE', createdAt: response.data!.createdAt, replyMsgSenderId: response.data!.replyMsgSenderId));
 
           if (Preferences.getInChat()) {
             List<Message> updateMsg = [];
-            updateMsg.add(Message(id: response.data!.message!.id,
-                chatId: response.data!.message!.chatId,
-                sender: response.data!.message!.sender,
-                message: response.data!.message!.message,
-                translationMsg: response.data!.message!.translationMsg,
-                attachmentType: response.data!.message!.attachmentType,
-                replyMessageId: response.data!.message!.replyMessageId,
-                replyMessage: response.data!.message!.replyMessage,
+            updateMsg.add(Message(id: response.data!.id,
+                chatId: response.data!.chatId,
+                sender: response.data!.sender,
+                message: response.data!.message,
+                translationMsg: response.data!.translationMsg,
+                attachmentType: response.data!.attachmentType,
+                replyMessageId: response.data!.replyMessageId,
+                replyMessage: response.data!.replyMessage,
                 status: 'READING',
-                time: response.data!.message!.time,
-                date: response.data!.message!.date));
-            final data = jsonEncode(updateMsg.map((e) => e.toJson()));
+                time: response.data!.time,
+                date: response.data!.date, createdAt: response.data!.createdAt, replyMsgSenderId: response.data!.replyMsgSenderId));
+            final data = jsonEncode(updateMsg);
             final response1 = await chatService.updateMessages(data);
             if (response1.runtimeType == UpdateMessageResponse) {
               final updateRes = response1 as UpdateMessageResponse;
@@ -168,15 +174,17 @@ class MainPageController extends GetxController {
                       attachmentType: e.attachmentType,
                       date: e.date,
                       time: e.time,
-                      status: e.status,
+                      statusMessage: e.status,
                       replyMessageId: e.replyMessageId,
                       replyMessage: e.replyMessage,
-                      statusMessage: 'DONE'));
+                      status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
                 }
                 await LocalService.addAllMessage(messages);
               }
             }
           }
+          Get.find<HomeController>().queryAllChat();
+          //await LocalService.updateChat(response.data!.chatId, Util.generateChar(4));
         }
       }
     });
@@ -184,6 +192,7 @@ class MainPageController extends GetxController {
 
   @override
   void onReady() async {
+    createSocket();
     FcmService.onMessage().listen((e) {
       NotificationService.cancelNotifications();
     });

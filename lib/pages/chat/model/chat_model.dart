@@ -15,6 +15,7 @@ class ChatModel {
   RxDouble size = 0.0.obs;
   RxBool showOriginalText = false.obs;
   RxString replyMessage = ''.obs;
+  RxString replyMsgSenderId = ''.obs;
   RxString replyMessageId = ''.obs;
   RxBool showScrollBottom = false.obs;
   RxBool showBtn = false.obs;

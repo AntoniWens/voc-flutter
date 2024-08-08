@@ -17,14 +17,14 @@ abstract class AllChatDao {
   @Query('SELECT * FROM AllChat')
   Future<List<AllChat>> queryAllChats();
 
-  @Query('SELECT * FROM AllChat WHERE (senderId = :senderId AND receiverId = :receiverId) OR (senderId = :receiverId AND receiverId = :senderId)')
+  @Query('SELECT * FROM AllChat WHERE (userOneId = :senderId AND userTwoId = :receiverId) OR (userOneId = :receiverId AND userTwoId = :senderId)')
   Future<AllChat?> getChat(String receiverId, String senderId);
 
   @Query('DELETE FROM AllChat WHERE id = :id')
   Future<void> deleteAllChat(String id);
 
-  @Query('UPDATE AllChat SET messageStatus = :status WHERE id = :id')
-  Future<void> updateChat(String id, String status);
+  @Query('UPDATE AllChat SET trigger = :triggers WHERE id = :id')
+  Future<void> updateChat(String id, String triggers);
 
   @Query('DELETE FROM AllChat')
   Future<void> deleteAllChats();

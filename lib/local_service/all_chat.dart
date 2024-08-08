@@ -12,6 +12,7 @@ class AllChat {
   String userTwoId;
   String userTwoFullname;
   String userTwoLanguage;
+  String trigger;
 
   AllChat({
       required this.id,
@@ -20,5 +21,5 @@ class AllChat {
       required this.userOneLanguage,
       required this.userTwoId,
       required this.userTwoFullname,
-      required this.userTwoLanguage,});
+      required this.userTwoLanguage,required this.trigger});
 }

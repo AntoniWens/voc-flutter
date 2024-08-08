@@ -1,6 +1,4 @@
 
-
-import 'package:voc/api_service/response/all_chats_response.dart';
 import 'package:voc/local_service/message.dart';
 
 import '../main_database.dart';
@@ -68,7 +66,11 @@ class LocalService {
     return _database?.messageDao.getAllMessageById(chatId);
   }
 
-  static Future<ChatMessage>? getLastMessage(String chatId) {
+  static Future<List<ChatMessage>>? getAllMessageDelivById(String chatId) {
+    return _database?.messageDao.getAllMessageDelivById(chatId);
+  }
+
+  static Future<ChatMessage?>? getLastMessage(String chatId) {
     return _database?.messageDao.getLastMessage(chatId);
   }
 

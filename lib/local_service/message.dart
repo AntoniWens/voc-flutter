@@ -16,7 +16,9 @@ class ChatMessage {
   String statusMessage;
   String replyMessageId;
   String replyMessage;
+  String replyMsgSenderId;
   String status;
+  String createdAt;
 
   ChatMessage({
       required this.id,
@@ -26,6 +28,6 @@ class ChatMessage {
       required this.translationMsg,
       required this.attachmentType,
       required this.date,
-      required this.time, required this.statusMessage, required this.replyMessageId, required this.replyMessage, required this.status,});
+      required this.time, required this.statusMessage, required this.replyMessageId, required this.replyMessage,required this.replyMsgSenderId, required this.status,required this.createdAt});
 
 }

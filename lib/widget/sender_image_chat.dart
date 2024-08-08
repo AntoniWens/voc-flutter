@@ -1,72 +1,78 @@
+import 'dart:ui';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:voc/util.dart';
 
 import '../color_font_util.dart';
 import '../pages/chat/model/chatting.dart';
 
 class SenderImageChat extends StatelessWidget {
-  const SenderImageChat({super.key, required this.chatting});
-
-  final Chatting chatting;
+  const SenderImageChat({super.key, });
 
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: const EdgeInsets.only(left: 32, right: 8, bottom: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                padding: const EdgeInsets.only(left: 8, top: 8),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [
-                      ColorFontUtil.red15,
-                      ColorFontUtil.red45
-                    ]),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15),
-                      bottomLeft: Radius.circular(15),
-                    )
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+          Container(
+            width: Util.queryImageSize(context, 0, 0)['width']! + 16,
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: ColorFontUtil.red45.withOpacity(0.2), ),
+              color: Colors.white
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8, bottom: 4),
-                      child: ClipRRect(borderRadius: BorderRadius.circular(10),child: Image.asset('assets/images/placeholder.png', width: 250,height: 250,fit: BoxFit.fill,)),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: CachedNetworkImage(
+                        imageUrl: 'https://images.pexels.com/photos/433989/pexels-photo-433989.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+                        placeholder: (_,__) => Image.asset('assets/images/placeholder_chat.png', width: 40,),
+                        errorWidget: (_,__,___) => Image.asset('assets/images/placeholder_chat.png', width: 40,),
+                        fit: BoxFit.cover,
+                        width: Util.queryImageSize(context, 0, 0)['width']!,
+                        height: Util.queryImageSize(context, 0, 0)['height']!,
+                      ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Text(chatting.message, style: TextStyle(
-                          fontFamily: ColorFontUtil.poppins,
-                          fontSize: 14,
-                          color: ColorFontUtil.white,
-                          fontWeight: FontWeight.w400
-                      ),),
-                    ),
-                    const SizedBox(height: 4,),
-                    Row(
-                      children: [
-                        Text(chatting.time, style: TextStyle(
-                            fontFamily: ColorFontUtil.poppins,
-                            fontSize: 9,
-                            color: ColorFontUtil.white,
-                            fontWeight: FontWeight.w400
-                        ),),
-                        const SizedBox(width: 4,),
-                        Icon(Icons.check_circle_outlined, size: 12,color: ColorFontUtil.white,),
-                        const SizedBox(width: 4,),
-                      ],
-                    ),
-                    const SizedBox(height: 4,),
                   ],
                 ),
-              ),
-            ],
-          ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    'data.message dawdwad ad awd a',
+                    style: TextStyle(
+                        fontFamily: ColorFontUtil.poppins,
+                        fontSize: 14,
+                        color: ColorFontUtil.black25,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '22:10',
+                      style: TextStyle(
+                          fontFamily: ColorFontUtil.poppins,
+                          fontSize: 10,
+                          color: ColorFontUtil.black25.withOpacity(0.9),
+                          fontWeight: FontWeight.w400),
+                    ),
+                    SizedBox(width: 4,),
+                    SizedBox(width:10, height: 10,child: CircularProgressIndicator(strokeWidth: 2.0,color: ColorFontUtil.red02,))
+                  ],
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );

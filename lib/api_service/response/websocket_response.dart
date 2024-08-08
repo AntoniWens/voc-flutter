@@ -5,7 +5,7 @@ import '../model/user.dart';
 
 class WebsocketResponse {
   String? event;
-  WData? data;
+  Message? data;
   String? channel;
 
   WebsocketResponse({
@@ -16,7 +16,7 @@ class WebsocketResponse {
 
   factory WebsocketResponse.fromJson(Map<String, dynamic> json) => WebsocketResponse(
     event: json['event'],
-    data: json['data'] == null ? null : WData.fromJson(jsonDecode(json['data'])['result']),
+    data: json['data'] == null ? null : Message.fromJson(jsonDecode(json['data'])['result']),
     channel: json['channel']
   );
 
@@ -24,37 +24,5 @@ class WebsocketResponse {
     "event": event,
     "data": data?.toJson(),
     "channel": channel,
-  };
-}
-
-class WData {
-  String id;
-  Message? message;
-  List<User> users;
-  String date;
-  String time;
-
-  WData({
-    required this.id,
-    required this.message,
-    required this.users,
-    required this.date,
-    required this.time
-  });
-
-  factory WData.fromJson(Map<String, dynamic> json) => WData(
-    id: json["id"] ?? '',
-    message: Message.fromJson(json['message']),
-    users: List<User>.from(json["users"].map((x) => User.fromJson(x))),
-    date: json["date"],
-    time: json["time"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "message": message?.toJson(),
-    "users": List<dynamic>.from(users.map((x) => x.toJson())),
-    "date": date,
-    "time": time,
   };
 }

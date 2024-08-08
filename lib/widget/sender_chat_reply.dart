@@ -97,7 +97,7 @@ class SenderChatReply extends StatelessWidget {
                               fontWeight: FontWeight.w400),
                         ),
                         SizedBox(width: 2,),
-                        Icon(data.status == 'PENDING' ? Icons.pending : Icons.done_all, color: Colors.red,size: 14,)
+                        Icon(data.statusMessage == 'PENDING' ? Icons.pending : Icons.done_all, color: Colors.red,size: 14,)
                       ],
                     ),
                   )

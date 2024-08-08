@@ -30,11 +30,11 @@ class SyncingController extends GetxController {
           attachmentType: e.attachmentType,
           replyMessageId: e.replyMessageId,
           replyMessage: e.replyMessage,
-          status: e.status,
+          status: e.statusMessage,
           time: e.time,
-          date: e.date));
+          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
     });
-    final data = jsonEncode(updateMsg.map((e) => e.toJson()));
+    final data = jsonEncode(updateMsg);
     final response1 = await chatService.updateMessages(data);
     if (response1.runtimeType == UpdateMessageResponse) {
       final updateRes = response1 as UpdateMessageResponse;
@@ -50,10 +50,10 @@ class SyncingController extends GetxController {
               attachmentType: e.attachmentType,
               date: e.date,
               time: e.time,
-              status: e.status,
+              statusMessage: e.status,
               replyMessageId: e.replyMessageId,
               replyMessage: e.replyMessage,
-              statusMessage: 'DONE'));
+              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
         }
         await LocalService.addAllMessage(messages);
       }
@@ -73,7 +73,7 @@ class SyncingController extends GetxController {
               userOneLanguage: e.users[0].language,
               userTwoId: e.users[1].id,
               userTwoFullname: e.users[1].fullName,
-              userTwoLanguage: e.users[1].language));
+              userTwoLanguage: e.users[1].language, trigger: 'k'));
         }
         for (var e in allChatRes.data.messages) {
           messages.add(ChatMessage(
@@ -88,7 +88,7 @@ class SyncingController extends GetxController {
               status: e.status,
               replyMessageId: e.replyMessageId,
               replyMessage: e.replyMessage,
-              statusMessage: 'DONE'));
+              statusMessage: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
         }
         await LocalService.addAllMessage(messages);
         await LocalService.addAllChats(allChats);
@@ -100,6 +100,7 @@ class SyncingController extends GetxController {
   void onReady() async {
     await LocalService.init();
     await syncData();
+    Get.toNamed(Routes.mainPage);
     super.onReady();
   }
 

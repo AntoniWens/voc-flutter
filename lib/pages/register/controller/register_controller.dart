@@ -132,7 +132,7 @@ class RegisterController extends GetxController {
   Future<void> sendOtp() async {
     model.isLoading.value = true;
     final body =
-        SendOtpBody(model.phoneCode.value, phoneController.text.toString(), emailController.text.toString(), 'sms');
+        SendOtpBody(model.phoneCode.value, phoneController.text.replaceFirst(RegExp(r'^0+'), ""), emailController.text.toString(), 'sms');
     final response = await authService.sendOtp(body);
     model.isLoading.value = false;
     if (response.runtimeType == DefaultResponse) {

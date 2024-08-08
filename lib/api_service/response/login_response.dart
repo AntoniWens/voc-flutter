@@ -30,6 +30,7 @@ class UserData {
   String role;
   String language;
   String nationality;
+  String photoUrl;
   String token;
 
   UserData({
@@ -41,6 +42,7 @@ class UserData {
     required this.role,
     required this.language,
     required this.nationality,
+    required this.photoUrl,
     required this.token,
   });
 
@@ -52,7 +54,7 @@ class UserData {
     role: json["role"],
     language: json["language"],
     nationality: json["nationality"],
-    token: json["token"], fullName: json['full_name'],
+    token: json["token"], fullName: json['full_name'], photoUrl: json['photo_url'] ?? '',
   );
 
   Map<String, dynamic> toJson() => {
@@ -64,6 +66,7 @@ class UserData {
     "role": role,
     "language": language,
     "nationality": nationality,
+    'photo_url': photoUrl,
     "token": token,
   };
 }

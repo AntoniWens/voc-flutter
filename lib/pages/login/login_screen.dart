@@ -2,6 +2,7 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../app_bar.dart';
@@ -45,8 +46,8 @@ class LoginScreen extends GetWidget<LoginController> {
                         boxShadow: [
                           BoxShadow(
                             color: ColorFontUtil.black25.withOpacity(0.2),
-                            spreadRadius: 0.5,
-                            blurRadius: 1,
+                            spreadRadius: 0.2,
+                            blurRadius: 0.5,
                             offset: const Offset(0, 0), // changes position of shadow
                           ),
                         ],
@@ -110,8 +111,8 @@ class LoginScreen extends GetWidget<LoginController> {
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.2),
-                                    spreadRadius: 0.1,
-                                    blurRadius: 0.3,
+                                    spreadRadius: 0.0,
+                                    blurRadius: 0.1,
                                     offset: const Offset(0, 0), // changes position of shadow
                                   ),
                                 ],
@@ -124,6 +125,9 @@ class LoginScreen extends GetWidget<LoginController> {
                                     controller: controller.phoneController,
                                     keyboardType: TextInputType.number,
                                     cursorColor: ColorFontUtil.red02,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(RegExp('[0-9]')),
+                                    ],
                                     style: TextStyle(
                                         fontFamily: ColorFontUtil.poppins, fontSize: 16),
                                     decoration: const InputDecoration(
@@ -148,8 +152,8 @@ class LoginScreen extends GetWidget<LoginController> {
                         boxShadow: [
                           BoxShadow(
                             color: ColorFontUtil.black25.withOpacity(0.2),
-                            spreadRadius: 0.5,
-                            blurRadius: 1,
+                            spreadRadius: 0.2,
+                            blurRadius: 0.5,
                             offset: const Offset(0, 0), // changes position of shadow
                           ),
                         ],

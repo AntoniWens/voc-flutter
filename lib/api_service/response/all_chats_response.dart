@@ -15,7 +15,7 @@ class AllChatsResponse {
   factory AllChatsResponse.fromJson(Map<String, dynamic> json) => AllChatsResponse(
     error: json["error"],
     message: json["message"],
-    data: json["data"],
+    data: WData.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
