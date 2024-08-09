@@ -6,7 +6,6 @@ import 'package:get/state_manager.dart';
 import 'package:voc/local_service/message.dart';
 
 import '../../../api_service/response/user_chat_response.dart';
-import 'chatting.dart';
 
 class ChatModel {
   RxList<UserChatData> chats = <UserChatData>[].obs;
@@ -15,6 +14,7 @@ class ChatModel {
   RxDouble size = 0.0.obs;
   RxBool showOriginalText = false.obs;
   RxString replyMessage = ''.obs;
+  RxString replyTranslationMsg = ''.obs;
   RxString replyMsgSenderId = ''.obs;
   RxString replyMessageId = ''.obs;
   RxBool showScrollBottom = false.obs;

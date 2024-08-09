@@ -25,12 +25,12 @@ class HomeController extends GetxController {
               userTwoId: a.userTwoId,
               userTwoFullname: a.userTwoFullname,
               userTwoLanguage: a.userTwoLanguage,
-              lastMessage: Preferences.getUser()['id'] == msg.senderId ? msg.message : msg.translationMsg,
-              translationMsg: msg.translationMsg,
-              attachmentType: msg.attachmentType,
-              messageStatus: msg.statusMessage,
-              date: msg.date,
-              time: msg.time, senderId: msg.senderId));
+              lastMessage: Preferences.getUser()['id'] == msg[msg.length - 1].senderId ? msg[msg.length - 1].message : msg[msg.length - 1].translationMsg,
+              translationMsg: msg[msg.length - 1].translationMsg,
+              attachmentType: msg[msg.length - 1].attachmentType,
+              messageStatus: msg[msg.length - 1].statusMessage,
+              date: msg[msg.length - 1].date,
+              time: msg[msg.length - 1].time, senderId: msg[msg.length - 1].senderId));
         }
         model.allChats.value = chats;
         model.allChats.refresh();
@@ -52,12 +52,12 @@ class HomeController extends GetxController {
               userTwoId: a.userTwoId,
               userTwoFullname: a.userTwoFullname,
               userTwoLanguage: a.userTwoLanguage,
-              lastMessage: Preferences.getUser()['id'] == msg.senderId ? msg.message : msg.translationMsg,
-              translationMsg: msg.translationMsg,
-              attachmentType: msg.attachmentType,
-              messageStatus: msg.statusMessage,
-              date: msg.date,
-              time: msg.time, senderId: msg.senderId));
+              lastMessage: Preferences.getUser()['id'] == msg[msg.length - 1].senderId ? msg[msg.length - 1].message : msg[msg.length - 1].translationMsg,
+              translationMsg: msg[msg.length - 1].translationMsg,
+              attachmentType: msg[msg.length - 1].attachmentType,
+              messageStatus: msg[msg.length - 1].statusMessage,
+              date: msg[msg.length - 1].date,
+              time: msg[msg.length - 1].time, senderId: msg[msg.length - 1].senderId));
         }
       }
       model.allChats.value = chats;

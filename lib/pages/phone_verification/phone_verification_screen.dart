@@ -1,9 +1,7 @@
 
-import 'package:voc/api_service/response/login_response.dart';
 
 import '../../app_bar.dart';
 import '../../library/otp_verification_field.dart';
-import '../../route_management/routes.dart';
 import '../../util.dart';
 import '../../widget/bottom_privacy.dart';
 import 'controller/phone_verification_controller.dart';

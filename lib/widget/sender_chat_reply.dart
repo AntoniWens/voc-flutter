@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:swipe_to/swipe_to.dart';
 import 'package:voc/local_service/message.dart';
+import 'package:voc/preferences.dart';
 
 import '../color_font_util.dart';
 
@@ -51,7 +52,7 @@ class SenderChatReply extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            Get.arguments['full_name'],
+                            data.replyMsgSenderId == Preferences.getUser()['id'] ? 'Me' : Get.arguments['full_name'],
                             style: TextStyle(
                                 fontFamily: ColorFontUtil.poppins,
                                 color: ColorFontUtil.red15,
@@ -59,7 +60,7 @@ class SenderChatReply extends StatelessWidget {
                                 fontWeight: FontWeight.w500),
                           ),
                           Text(
-                            data.replyMessage,
+                            data.replyMsgSenderId == Preferences.getUser()['id'] ? data.replyMessage : data.replyTranslationMsg,
                             maxLines: 1,
                             style: TextStyle(
                               fontFamily: ColorFontUtil.poppins,
@@ -96,7 +97,7 @@ class SenderChatReply extends StatelessWidget {
                               color: ColorFontUtil.black25.withOpacity(0.9),
                               fontWeight: FontWeight.w400),
                         ),
-                        SizedBox(width: 2,),
+                        const SizedBox(width: 2,),
                         Icon(data.statusMessage == 'PENDING' ? Icons.pending : Icons.done_all, color: Colors.red,size: 14,)
                       ],
                     ),

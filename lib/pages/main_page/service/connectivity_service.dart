@@ -6,6 +6,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:voc/api_service/chat_service.dart';
 import 'package:voc/api_service/model/sender.dart';
 import 'package:voc/local_service/local_service.dart';
+import 'package:voc/pages/home/controller/home_controller.dart';
 import 'package:voc/preferences.dart';
 
 import '../../../api_service/model/message.dart';
@@ -31,9 +32,10 @@ class ConnectivityService extends GetxService {
           replyMessage: e.replyMessage,
           status: e.status,
           time: e.time,
-          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
     });
     final data = jsonEncode(updateMsg);
+    print(data);
     final response1 = await chatService.updateMessages(data);
     if (response1.runtimeType == UpdateMessageResponse) {
       final updateRes = response1 as UpdateMessageResponse;
@@ -52,9 +54,10 @@ class ConnectivityService extends GetxService {
               statusMessage: e.status,
               replyMessageId: e.replyMessageId,
               replyMessage: e.replyMessage,
-              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
         }
         await LocalService.addAllMessage(messages);
+        Get.find<HomeController>().queryAllChat();
       }
     }
   }

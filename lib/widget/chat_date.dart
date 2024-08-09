@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:voc/local_service/message.dart';
 import 'package:voc/util.dart';
 
 import '../color_font_util.dart';

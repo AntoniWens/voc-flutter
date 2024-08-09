@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import '../model/message.dart';
-import '../model/user.dart';
 
 class WebsocketResponse {
   String? event;

@@ -9,7 +9,6 @@ import '../../color_font_util.dart';
 import '../../popup/selecting_language.dart';
 import '../../popup/selecting_nation.dart';
 import '../../popup/selecting_role.dart';
-import '../../route_management/routes.dart';
 import '../../widget/custom_drop_down.dart';
 import '../../widget/custom_text_field.dart';
 import '../../widget/red_button.dart';

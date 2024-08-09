@@ -100,7 +100,7 @@ class _$MainDatabase extends MainDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `AllChat` (`id` TEXT NOT NULL, `userOneId` TEXT NOT NULL, `userOneFullname` TEXT NOT NULL, `userOneLanguage` TEXT NOT NULL, `userTwoId` TEXT NOT NULL, `userTwoFullname` TEXT NOT NULL, `userTwoLanguage` TEXT NOT NULL, `trigger` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `ChatMessage` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `translationMsg` TEXT NOT NULL, `attachmentType` TEXT NOT NULL, `date` TEXT NOT NULL, `time` TEXT NOT NULL, `statusMessage` TEXT NOT NULL, `replyMessageId` TEXT NOT NULL, `replyMessage` TEXT NOT NULL, `status` TEXT NOT NULL, `createdAt` TEXT NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `ChatMessage` (`id` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `translationMsg` TEXT NOT NULL, `attachmentType` TEXT NOT NULL, `date` TEXT NOT NULL, `time` TEXT NOT NULL, `statusMessage` TEXT NOT NULL, `replyMessageId` TEXT NOT NULL, `replyMessage` TEXT NOT NULL, `replyMsgSenderId` TEXT NOT NULL, `replyTranslationMsg` TEXT NOT NULL, `status` TEXT NOT NULL, `createdAt` TEXT NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -241,6 +241,8 @@ class _$MessageDao extends MessageDao {
                   'statusMessage': item.statusMessage,
                   'replyMessageId': item.replyMessageId,
                   'replyMessage': item.replyMessage,
+                  'replyMsgSenderId': item.replyMsgSenderId,
+                  'replyTranslationMsg': item.replyTranslationMsg,
                   'status': item.status,
                   'createdAt': item.createdAt
                 },
@@ -270,6 +272,8 @@ class _$MessageDao extends MessageDao {
             statusMessage: row['statusMessage'] as String,
             replyMessageId: row['replyMessageId'] as String,
             replyMessage: row['replyMessage'] as String,
+            replyMsgSenderId: row['replyMsgSenderId'] as String,
+            replyTranslationMsg: row['replyTranslationMsg'] as String,
             status: row['status'] as String,
             createdAt: row['createdAt'] as String));
   }
@@ -278,7 +282,7 @@ class _$MessageDao extends MessageDao {
   Future<List<ChatMessage>> getAllMessageDelivById(String chatId) async {
     return _queryAdapter.queryList(
         'SELECT * FROM ChatMessage WHERE statusMessage = \'DELIVERED\' AND chatId =?1',
-        mapper: (Map<String, Object?> row) => ChatMessage(id: row['id'] as String, chatId: row['chatId'] as String, senderId: row['senderId'] as String, message: row['message'] as String, translationMsg: row['translationMsg'] as String, attachmentType: row['attachmentType'] as String, date: row['date'] as String, time: row['time'] as String, statusMessage: row['statusMessage'] as String, replyMessageId: row['replyMessageId'] as String, replyMessage: row['replyMessage'] as String, status: row['status'] as String, createdAt: row['createdAt'] as String),
+        mapper: (Map<String, Object?> row) => ChatMessage(id: row['id'] as String, chatId: row['chatId'] as String, senderId: row['senderId'] as String, message: row['message'] as String, translationMsg: row['translationMsg'] as String, attachmentType: row['attachmentType'] as String, date: row['date'] as String, time: row['time'] as String, statusMessage: row['statusMessage'] as String, replyMessageId: row['replyMessageId'] as String, replyMessage: row['replyMessage'] as String, replyMsgSenderId: row['replyMsgSenderId'] as String, replyTranslationMsg: row['replyTranslationMsg'] as String, status: row['status'] as String, createdAt: row['createdAt'] as String),
         arguments: [chatId]);
   }
 
@@ -298,6 +302,8 @@ class _$MessageDao extends MessageDao {
             statusMessage: row['statusMessage'] as String,
             replyMessageId: row['replyMessageId'] as String,
             replyMessage: row['replyMessage'] as String,
+            replyMsgSenderId: row['replyMsgSenderId'] as String,
+            replyTranslationMsg: row['replyTranslationMsg'] as String,
             status: row['status'] as String,
             createdAt: row['createdAt'] as String),
         arguments: [chatId],
@@ -306,10 +312,25 @@ class _$MessageDao extends MessageDao {
   }
 
   @override
-  Future<ChatMessage?> getLastMessage(String chatId) async {
-    return _queryAdapter.query(
-        'SELECT * FROM ChatMessage WHERE chatId =?1 ORDER BY date,time DESC LIMIT 1',
-        mapper: (Map<String, Object?> row) => ChatMessage(id: row['id'] as String, chatId: row['chatId'] as String, senderId: row['senderId'] as String, message: row['message'] as String, translationMsg: row['translationMsg'] as String, attachmentType: row['attachmentType'] as String, date: row['date'] as String, time: row['time'] as String, statusMessage: row['statusMessage'] as String, replyMessageId: row['replyMessageId'] as String, replyMessage: row['replyMessage'] as String, status: row['status'] as String, createdAt: row['createdAt'] as String),
+  Future<List<ChatMessage>?> getLastMessage(String chatId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChatMessage WHERE chatId =?1 ORDER BY createdAt ASC',
+        mapper: (Map<String, Object?> row) => ChatMessage(
+            id: row['id'] as String,
+            chatId: row['chatId'] as String,
+            senderId: row['senderId'] as String,
+            message: row['message'] as String,
+            translationMsg: row['translationMsg'] as String,
+            attachmentType: row['attachmentType'] as String,
+            date: row['date'] as String,
+            time: row['time'] as String,
+            statusMessage: row['statusMessage'] as String,
+            replyMessageId: row['replyMessageId'] as String,
+            replyMessage: row['replyMessage'] as String,
+            replyMsgSenderId: row['replyMsgSenderId'] as String,
+            replyTranslationMsg: row['replyTranslationMsg'] as String,
+            status: row['status'] as String,
+            createdAt: row['createdAt'] as String),
         arguments: [chatId]);
   }
 

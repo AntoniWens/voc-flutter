@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:voc/local_service/local_service.dart';
 import 'package:voc/util.dart';
@@ -14,7 +16,6 @@ import '../../../api_service/model/message.dart';
 import '../../../api_service/model/sender.dart';
 import '../../../api_service/response/send_message_response.dart';
 import '../../../api_service/response/update_message_response.dart';
-import '../../../local_service/all_chat.dart';
 import '../../../local_service/message.dart';
 import '../../../preferences.dart';
 import '../model/chat_model.dart';
@@ -25,8 +26,7 @@ class ChatController extends GetxController {
   final typeController = TextEditingController();
   final autoScrollController = AutoScrollController(axis: Axis.vertical);
   late ChatService chatService;
-
-  FocusNode focusNode = FocusNode();
+  late StreamSubscription<InternetConnectionStatus> listener;
 
   void allMessage() {
     LocalService.getAllMessageById(Get.arguments['chat_id'])?.listen((e) {
@@ -45,7 +45,7 @@ class ChatController extends GetxController {
   }
 
   void scrollDown() {
-    Future.delayed(Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       autoScrollController.animateTo(
         autoScrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 100),
@@ -65,8 +65,8 @@ class ChatController extends GetxController {
     model.size.refresh();
   }
 
-  void showOriginalText(bool original) {
-    model.showOriginalText.value = original;
+  void showOriginalText() {
+    model.showOriginalText.value = !model.showOriginalText.value;
     model.showOriginalText.refresh();
   }
 
@@ -89,7 +89,7 @@ class ChatController extends GetxController {
           replyMessage: e.replyMessage,
           status: 'READ',
           time: e.time,
-          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
     });
 
     final data = jsonEncode(updateMsg);
@@ -111,7 +111,7 @@ class ChatController extends GetxController {
               statusMessage: e.status,
               replyMessageId: e.replyMessageId,
               replyMessage: e.replyMessage,
-              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
         }
         await LocalService.addAllMessage(messages);
       }
@@ -127,7 +127,7 @@ class ChatController extends GetxController {
           replyMessageId: e.replyMessageId,
           replyMessage: e.replyMessage,
           time: e.time,
-          date: e.date, statusMessage: 'READ', status: 'UNDONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId,));
+          date: e.date, statusMessage: 'READ', status: 'UNDONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg,));
       });
       await LocalService.addAllMessage(updateMsg);
     }
@@ -150,11 +150,11 @@ class ChatController extends GetxController {
         statusMessage: 'PENDING',
         replyMessageId: model.replyMessageId.value,
         replyMessage: model.replyMessage.value,
-        status: 'UNDONE', createdAt: currentDate['time_stamp'], replyMsgSenderId: model.replyMsgSenderId.value));
+        status: 'UNDONE', createdAt: currentDate['time_stamp'], replyMsgSenderId: model.replyMsgSenderId.value, replyTranslationMsg: model.replyTranslationMsg.value));
 
     final body = SendMessageBody(Get.arguments['user_id'], message,
         id, Get.arguments['chat_id'], model.replyMessageId.value);
-    showReply('', '', '');
+    showReply('', '', '', '');
     final response = await chatService.sendMessage(body);
     if (response.runtimeType == SendMessageResponse) {
       final send = response as SendMessageResponse;
@@ -171,7 +171,7 @@ class ChatController extends GetxController {
             statusMessage: response.data.status,
             replyMessageId: response.data.replyMessageId,
             replyMessage: response.data.replyMessage,
-            status: 'DONE', createdAt: response.data.createdAt, replyMsgSenderId: response.data.replyMsgSenderId));
+            status: 'DONE', createdAt: response.data.createdAt, replyMsgSenderId: response.data.replyMsgSenderId, replyTranslationMsg: response.data.replyTranslationMsg));
       } else {
         Fluttertoast.showToast(msg: send.message);
       }
@@ -182,10 +182,11 @@ class ChatController extends GetxController {
 
   }
 
-  void showReply(String message, String id, String senderId) {
+  void showReply(String message, String id, String senderId, String translationMsg) {
     model.replyMessage.value = message;
     model.replyMessageId.value = id;
     model.replyMsgSenderId.value = senderId;
+    model.replyTranslationMsg.value = translationMsg;
     model.replyMessage.refresh();
   }
 
@@ -201,7 +202,6 @@ class ChatController extends GetxController {
     });
 
     KeyboardVisibilityController().onChange.listen((e) {
-      print('appear');
       scrollDown();
     });
 
@@ -219,7 +219,6 @@ class ChatController extends GetxController {
   @override
   void onClose() {
     Preferences.saveInChat(false);
-    focusNode.dispose();
     super.onClose();
   }
 }

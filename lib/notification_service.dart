@@ -1,9 +1,7 @@
 import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/material.dart';
 import 'package:voc/api_service/model/message.dart';
-import 'package:voc/preferences.dart';
 
 class NotificationService {
 
@@ -41,7 +39,7 @@ class NotificationService {
   }
 
   static Future<void> createNewNotification(Message message) async {
-    Random random = new Random();
+    Random random = Random();
     int randomNumber = random.nextInt(100);
     await AwesomeNotifications().createNotification(
         content: NotificationContent(

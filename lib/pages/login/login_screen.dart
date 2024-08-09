@@ -3,9 +3,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lottie/lottie.dart';
 
-import '../../app_bar.dart';
 import '../../color_font_util.dart';
 import '../../route_management/routes.dart';
 import '../../widget/bottom_privacy.dart';

@@ -2,14 +2,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:swipe_to/swipe_to.dart';
 import 'package:voc/local_service/message.dart';
 
-import '../api_service/response/user_chat_response.dart';
 import '../color_font_util.dart';
-import '../pages/chat/model/chatting.dart';
 
 class ReceiverChat extends StatelessWidget {
   const ReceiverChat({super.key, required this.data, required this.showOriginalText, required this.onReply});

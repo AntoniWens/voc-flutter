@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:swipe_to/swipe_to.dart';
 import 'package:voc/local_service/message.dart';
 
@@ -60,7 +59,7 @@ class SenderChat extends StatelessWidget {
                               color: ColorFontUtil.black25.withOpacity(0.9),
                               fontWeight: FontWeight.w400),
                         ),
-                        SizedBox(width: 2,),
+                        const SizedBox(width: 2,),
                         Icon(data.statusMessage == 'PENDING' ? Icons.pending : Icons.done_all, color: Colors.red,size: 14,)
 
                       ],

@@ -1,8 +1,6 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../color_font_util.dart';
 
@@ -46,14 +44,14 @@ class SendImage extends StatelessWidget {
             Container(
               width: double.infinity,
               height: 250,
-              padding: EdgeInsets.all(6),
+              padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 border: Border.all(color: ColorFontUtil.grayC7),
                 borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(image: AssetImage('assets/images/placeholder.png'))
+                image: const DecorationImage(image: AssetImage('assets/images/placeholder.png'))
               ),
             ),
-            SizedBox(height: 16,),
+            const SizedBox(height: 16,),
             Row(
               children: [
                 Expanded(
@@ -83,7 +81,7 @@ class SendImage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10))),
                   ),
                 ),
-                SizedBox(width: 16,),
+                const SizedBox(width: 16,),
                 GestureDetector(
                     onTap: () {
                       onTap.call(typeController2.text);

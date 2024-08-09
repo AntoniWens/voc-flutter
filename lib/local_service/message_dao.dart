@@ -1,8 +1,6 @@
 
 import 'package:floor/floor.dart';
-import 'package:voc/api_service/response/all_chats_response.dart';
 
-import 'all_chat.dart';
 import 'message.dart';
 
 @dao
@@ -22,8 +20,8 @@ abstract class MessageDao {
   @Query('SELECT * FROM ChatMessage WHERE chatId =:chatId ORDER BY createdAt ASC')
   Stream<List<ChatMessage>> getAllMessageById(String chatId);
 
-  @Query('SELECT * FROM ChatMessage WHERE chatId =:chatId ORDER BY date,time DESC LIMIT 1')
-  Future<ChatMessage?> getLastMessage(String chatId);
+  @Query('SELECT * FROM ChatMessage WHERE chatId =:chatId ORDER BY createdAt ASC')
+  Future<List<ChatMessage>?> getLastMessage(String chatId);
 
   @Query('DELETE FROM ChatMessage WHERE id =:id')
   Future<void> deleteMessage(String id);

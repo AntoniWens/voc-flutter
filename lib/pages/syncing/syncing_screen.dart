@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -12,7 +11,7 @@ class SyncingScreen extends GetWidget<SyncingController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -25,13 +24,13 @@ class SyncingScreen extends GetWidget<SyncingController> {
                     fontWeight: FontWeight.w500,
                   fontSize: 16
                 ),),
-                SizedBox(height: 16,),
+                const SizedBox(height: 16,),
                 Text("We're syncing your data", style: TextStyle(
                     fontFamily: ColorFontUtil.poppins,
                     fontWeight: FontWeight.w400,
                   fontSize: 12
                 ),),
-                SizedBox(height: 16,),
+                const SizedBox(height: 16,),
                 LottieBuilder.asset('assets/loading/loading2.json',width: 70,height: 70,),
               ],
             )

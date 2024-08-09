@@ -70,7 +70,7 @@ class LocalService {
     return _database?.messageDao.getAllMessageDelivById(chatId);
   }
 
-  static Future<ChatMessage?>? getLastMessage(String chatId) {
+  static Future<List<ChatMessage>?>? getLastMessage(String chatId) {
     return _database?.messageDao.getLastMessage(chatId);
   }
 
@@ -84,6 +84,11 @@ class LocalService {
 
   static Future<void> deleteAllMessage() async {
     await _database?.messageDao.deleteAllMessage();
+  }
+
+  static Future<void> clearDB() async{
+    await deleteChats();
+    await deleteAllMessage();
   }
 
 }

@@ -42,7 +42,7 @@ class AppRoutes {
     ),
     GetPage(
         name: Routes.mainPage,
-        page: () =>  MainPageScreen(),
+        page: () =>  const MainPageScreen(),
         binding: MainPageBinding()
     ),
     GetPage(

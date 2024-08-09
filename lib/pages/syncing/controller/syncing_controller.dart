@@ -10,7 +10,6 @@ import 'package:voc/route_management/routes.dart';
 import '../../../api_service/model/message.dart';
 import '../../../api_service/response/all_chats_response.dart';
 import '../../../api_service/response/update_message_response.dart';
-import '../../../api_service/response/user_chat_response.dart';
 import '../../../local_service/all_chat.dart';
 import '../../../local_service/local_service.dart';
 
@@ -32,7 +31,7 @@ class SyncingController extends GetxController {
           replyMessage: e.replyMessage,
           status: e.statusMessage,
           time: e.time,
-          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
     });
     final data = jsonEncode(updateMsg);
     final response1 = await chatService.updateMessages(data);
@@ -53,7 +52,7 @@ class SyncingController extends GetxController {
               statusMessage: e.status,
               replyMessageId: e.replyMessageId,
               replyMessage: e.replyMessage,
-              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
         }
         await LocalService.addAllMessage(messages);
       }
@@ -88,7 +87,7 @@ class SyncingController extends GetxController {
               status: e.status,
               replyMessageId: e.replyMessageId,
               replyMessage: e.replyMessage,
-              statusMessage: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+              statusMessage: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
         }
         await LocalService.addAllMessage(messages);
         await LocalService.addAllChats(allChats);

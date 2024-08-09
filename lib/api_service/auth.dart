@@ -66,4 +66,22 @@ class Auth {
     }
 
   }
+  Future<Object> logout(String token) async {
+    try {
+      final response =  await http.post(Uri.parse('${Configuration.baseUrl}api/mobile_api/auth/logout'), headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      });
+      if (kDebugMode) {
+        print('response logout : ${response.body}');
+      }
+      return 'Success';
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return e.toString();
+    }
+
+  }
 }

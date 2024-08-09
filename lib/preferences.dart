@@ -34,6 +34,10 @@ class Preferences {
     return jsonDecode(_preferences?.getString(_userKey) ?? '');
   }
 
+  static clear() {
+    _preferences?.clear();
+  }
+
   static const _tokenKey = 'token';
   static const _userKey = 'user';
   static const _inChat = 'in_chat';

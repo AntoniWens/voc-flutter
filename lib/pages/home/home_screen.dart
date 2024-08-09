@@ -1,13 +1,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:voc/local_service/local_service.dart';
 import 'package:voc/preferences.dart';
 
 import '../../app_bar.dart';
 import '../../color_font_util.dart';
 import '../../route_management/routes.dart';
-import '../../util.dart';
 import '../../widget/home_chat.dart';
 import 'controller/home_controller.dart';
 
@@ -43,8 +41,6 @@ class HomeScreen extends StatelessWidget {
                   if (result != null) {
                     controller.queryAllChat();
                   }
-
-
                 }));
               }),)
         ),

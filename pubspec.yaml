@@ -55,6 +55,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   awesome_notifications: ^0.9.3+1
 
+  sqflite: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

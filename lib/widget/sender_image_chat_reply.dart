@@ -1,13 +1,10 @@
-import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:voc/util.dart';
 
 import '../color_font_util.dart';
-import '../pages/chat/model/chatting.dart';
 
 class SenderImageChat extends StatelessWidget {
   const SenderImageChat({super.key, });
@@ -22,7 +19,7 @@ class SenderImageChat extends StatelessWidget {
         children: [
           Container(
             width: Util.queryImageSize(context, 0, 0)['width']! + 16,
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: ColorFontUtil.red45.withOpacity(0.2), ),
@@ -99,7 +96,7 @@ class SenderImageChat extends StatelessWidget {
                           color: ColorFontUtil.black25.withOpacity(0.9),
                           fontWeight: FontWeight.w400),
                     ),
-                    SizedBox(width: 4,),
+                    const SizedBox(width: 4,),
                     SizedBox(width:10, height: 10,child: CircularProgressIndicator(strokeWidth: 2.0,color: ColorFontUtil.red02,))
                   ],
                 ),

@@ -1,8 +1,6 @@
 
 import 'package:flutter/cupertino.dart';
-import '../api_service/model/user.dart';
 import '../api_service/model/user_m.dart';
-import '../api_service/response/all_users_response.dart';
 import '../color_font_util.dart';
 
 class UserItem extends StatelessWidget {

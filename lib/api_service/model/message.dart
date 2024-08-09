@@ -10,6 +10,7 @@ class Message {
   String replyMessageId;
   String replyMessage;
   String replyMsgSenderId;
+  String replyTranslationMsg;
   String status;
   String time;
   String date;
@@ -25,6 +26,7 @@ class Message {
     required this.replyMessageId,
     required this.replyMessage,
     required this.replyMsgSenderId,
+    required this.replyTranslationMsg,
     required this.status,
     required this.time,
     required this.date,
@@ -43,7 +45,7 @@ class Message {
     replyMsgSenderId: json['reply_msg_sender_id'],
     status: json["status"],
     time: json["time"],
-    date: json["date"], createdAt: json['created_at'],
+    date: json["date"], createdAt: json['created_at'], replyTranslationMsg: json['reply_translation_msg'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -56,6 +58,7 @@ class Message {
     "reply_message_id": replyMessageId,
     "reply_message": replyMessage,
     'reply_msg_sender_id': replyMsgSenderId,
+    'reply_translation_msg': replyTranslationMsg,
     "status": status,
     "time": time,
     "date": date,

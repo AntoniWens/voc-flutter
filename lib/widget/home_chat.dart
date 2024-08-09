@@ -1,13 +1,9 @@
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:voc/api_service/model/chat.dart';
 import 'package:voc/preferences.dart';
 
 import '../color_font_util.dart';
-import '../local_service/all_chat.dart';
-import '../route_management/routes.dart';
 
 class HomeChat extends StatelessWidget {
   const HomeChat({super.key, required this.allChat, required this.onTap});
@@ -45,12 +41,18 @@ class HomeChat extends StatelessWidget {
                             fontWeight: FontWeight.w500
                         ),),
                         const SizedBox(height: 4,),
-                        Text(allChat.lastMessage, maxLines: 1, style: TextStyle(
-                            fontFamily: ColorFontUtil.poppins,
-                            fontSize: 14,
-                            color: allChat.senderId == Preferences.getUser()['id'] ? ColorFontUtil.black25.withOpacity(0.8): (allChat.messageStatus == 'DELIVERED' ? Colors.black :ColorFontUtil.black25.withOpacity(0.8)),
-                            fontWeight: allChat.senderId == Preferences.getUser()['id'] ?FontWeight.w400 :(allChat.messageStatus == 'DELIVERED' ? FontWeight.w500 :FontWeight.w400)
-                        ),),
+                        Row(
+                          children: [
+                            allChat.senderId == Preferences.getUser()['id'] ? Icon(allChat.messageStatus == 'PENDING' ? Icons.pending : Icons.done_all, color: Colors.red,size: 14,) : const SizedBox.shrink(),
+                            allChat.senderId == Preferences.getUser()['id'] ? const SizedBox(width: 4,): const SizedBox.shrink(),
+                            Text(allChat.lastMessage, maxLines: 1, style: TextStyle(
+                                fontFamily: ColorFontUtil.poppins,
+                                fontSize: 14,
+                                color: allChat.senderId == Preferences.getUser()['id'] ? ColorFontUtil.black25.withOpacity(0.8): (allChat.messageStatus == 'DELIVERED' ? Colors.black :ColorFontUtil.black25.withOpacity(0.8)),
+                                fontWeight: allChat.senderId == Preferences.getUser()['id'] ?FontWeight.w400 :(allChat.messageStatus == 'DELIVERED' ? FontWeight.w500 :FontWeight.w400)
+                            ),),
+                          ],
+                        ),
                       ],
                     ),
                   ),

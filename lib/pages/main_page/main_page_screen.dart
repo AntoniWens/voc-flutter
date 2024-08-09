@@ -9,7 +9,7 @@ import '../../color_font_util.dart';
 import 'controller/main_page_controller.dart';
 
 class MainPageScreen extends GetWidget<MainPageController> {
-   MainPageScreen({super.key});
+   const MainPageScreen({super.key});
 
 
   @override
@@ -19,7 +19,7 @@ class MainPageScreen extends GetWidget<MainPageController> {
             () => controller.model.selectedIndex.value == 0
             ? HomeScreen()
             : controller.model.selectedIndex.value == 1
-            ? ProfileScreen()
+            ? const ProfileScreen()
             : controller.model.selectedIndex.value == 2
             ? Container()
             : Container(),
@@ -36,17 +36,16 @@ class MainPageScreen extends GetWidget<MainPageController> {
                 type: BottomNavigationBarType.fixed,
                 items: [
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.chat, color: ColorFontUtil.black25.withOpacity(0.6),),
-                    activeIcon: Icon(Icons.chat, color: ColorFontUtil.red45,),
-                    label: 'home'.tr,
+                    icon: Image.asset('assets/images/chat_unselected.png', width: 28, height: 28,),
+                    activeIcon: Image.asset('assets/images/chat_selected.png',width: 28, height: 28,),
+                    label: 'Chat'
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.person, color: ColorFontUtil.black25.withOpacity(0.6),),
-                    activeIcon: Icon(Icons.person, color: ColorFontUtil.red45,),
-                    label: 'profile'.tr,
+                      icon: Image.asset('assets/images/user_unselected.png', width: 24, height: 24,),
+                      activeIcon: Image.asset('assets/images/user_selected.png',width: 24, height: 24,),
+                    label: 'Profile'
                   ),
                 ],
-                showUnselectedLabels: true,
                 selectedItemColor: ColorFontUtil.red02,
                 unselectedItemColor: ColorFontUtil.black25.withOpacity(0.6),
                 selectedLabelStyle: TextStyle(

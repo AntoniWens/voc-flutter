@@ -1,17 +1,17 @@
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:voc/api_service/chat_service.dart';
 import 'package:voc/api_service/model/sender.dart';
 import 'package:voc/fcm_service.dart';
 import 'package:voc/notification_service.dart';
 import 'package:voc/pages/home/controller/home_controller.dart';
 import 'package:voc/preferences.dart';
-import 'package:voc/util.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../../api_service/model/chat.dart';
 import '../../../api_service/model/message.dart';
 import '../../../api_service/response/all_chats_response.dart';
 import '../../../api_service/response/update_message_response.dart';
@@ -25,6 +25,7 @@ import '../model/main_page_model.dart';
 class MainPageController extends GetxController {
   final model = MainPageModel();
   late ChatService chatService;
+  late StreamSubscription<InternetConnectionStatus> listener;
 
   void onItemTapped(int index) {
     model.selectedIndex.value = index;
@@ -45,10 +46,11 @@ class MainPageController extends GetxController {
           replyMessage: e.replyMessage,
           status: e.statusMessage,
           time: e.time,
-          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+          date: e.date, createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
     });
     if (updateMsg.isNotEmpty) {
       final data = jsonEncode(updateMsg);
+      print(data);
       final response1 = await chatService.updateMessages(data);
       if (response1.runtimeType == UpdateMessageResponse) {
         final updateRes = response1 as UpdateMessageResponse;
@@ -67,7 +69,7 @@ class MainPageController extends GetxController {
                 statusMessage: e.status,
                 replyMessageId: e.replyMessageId,
                 replyMessage: e.replyMessage,
-                status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+                status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
           }
           await LocalService.addAllMessage(messages);
         }
@@ -103,12 +105,13 @@ class MainPageController extends GetxController {
               statusMessage: e.status,
               replyMessageId: e.replyMessageId,
               replyMessage: e.replyMessage,
-              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+              status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
         }
         await LocalService.addAllMessage(messages);
         await LocalService.addAllChats(allChats);
       }
     }
+    Get.find<HomeController>().queryAllChat();
   }
 
   void createSocket() {
@@ -143,7 +146,7 @@ class MainPageController extends GetxController {
               statusMessage: response.data!.status,
               replyMessageId: response.data!.replyMessageId,
               replyMessage: response.data!.replyMessage,
-              status: 'DONE', createdAt: response.data!.createdAt, replyMsgSenderId: response.data!.replyMsgSenderId));
+              status: 'DONE', createdAt: response.data!.createdAt, replyMsgSenderId: response.data!.replyMsgSenderId, replyTranslationMsg: response.data!.replyTranslationMsg));
 
           if (Preferences.getInChat()) {
             List<Message> updateMsg = [];
@@ -155,9 +158,9 @@ class MainPageController extends GetxController {
                 attachmentType: response.data!.attachmentType,
                 replyMessageId: response.data!.replyMessageId,
                 replyMessage: response.data!.replyMessage,
-                status: 'READING',
+                status: 'READ',
                 time: response.data!.time,
-                date: response.data!.date, createdAt: response.data!.createdAt, replyMsgSenderId: response.data!.replyMsgSenderId));
+                date: response.data!.date, createdAt: response.data!.createdAt, replyMsgSenderId: response.data!.replyMsgSenderId, replyTranslationMsg: response.data!.replyTranslationMsg));
             final data = jsonEncode(updateMsg);
             final response1 = await chatService.updateMessages(data);
             if (response1.runtimeType == UpdateMessageResponse) {
@@ -177,7 +180,7 @@ class MainPageController extends GetxController {
                       statusMessage: e.status,
                       replyMessageId: e.replyMessageId,
                       replyMessage: e.replyMessage,
-                      status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId));
+                      status: 'DONE', createdAt: e.createdAt, replyMsgSenderId: e.replyMsgSenderId, replyTranslationMsg: e.replyTranslationMsg));
                 }
                 await LocalService.addAllMessage(messages);
               }
@@ -196,6 +199,15 @@ class MainPageController extends GetxController {
     FcmService.onMessage().listen((e) {
       NotificationService.cancelNotifications();
     });
+    listener = InternetConnectionChecker().onStatusChange.listen((status) async {
+      switch (status) {
+        case InternetConnectionStatus.connected:
+          await syncData();
+          break;
+        case InternetConnectionStatus.disconnected:
+          break;
+      }
+    });
     NotificationService.checkNotificationPermission();
     if (Get.arguments == null) {
       await syncData();
@@ -209,5 +221,11 @@ class MainPageController extends GetxController {
     chatService = ChatService(token: Preferences.getToken());
     createSocket();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    listener.cancel();
+    super.onClose();
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:swipe_to/swipe_to.dart';
 import 'package:voc/local_service/message.dart';
+import 'package:voc/preferences.dart';
 
 import '../color_font_util.dart';
 
@@ -50,7 +51,7 @@ class ReceiverChatReply extends StatelessWidget {
                     },
                     child: Container(
                       width: 150,
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           color: ColorFontUtil.grayFA,
                           borderRadius: BorderRadius.circular(5)),
@@ -58,7 +59,7 @@ class ReceiverChatReply extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            Get.arguments['full_name'],
+                            data.replyMsgSenderId == Preferences.getUser()['id'] ? 'Me' : Get.arguments['full_name'],
                             style: TextStyle(
                                 fontFamily: ColorFontUtil.poppins,
                                 color: ColorFontUtil.red15,
@@ -66,7 +67,7 @@ class ReceiverChatReply extends StatelessWidget {
                                 fontWeight: FontWeight.w500),
                           ),
                           Text(
-                            data.replyMessage,
+                            data.replyMsgSenderId == Preferences.getUser()['id'] ? data.replyMessage : data.replyTranslationMsg,
                             maxLines: 1,
                             style: TextStyle(
                               fontFamily: ColorFontUtil.poppins,

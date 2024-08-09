@@ -1,9 +1,8 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:voc/popup/send_image.dart';
 import 'package:voc/widget/chat_date.dart';
 import 'package:voc/widget/receiver_chat_reply.dart';
 import 'package:voc/widget/sender_chat_reply.dart';
-import 'package:voc/widget/sender_image_chat.dart';
 
 import '../../color_font_util.dart';
 import '../../preferences.dart';
@@ -83,18 +82,23 @@ class ChatScreen extends GetWidget<ChatController> {
                     ),
                   ],
                 ),
-                Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white
-                    ),
-                    child: Icon(
-                      Icons.g_translate_outlined,
-                      color: Colors.grey,
-                      size: 15,
-                    ))
+                GestureDetector(
+                  onTap: () {
+                    controller.showOriginalText();
+                  },
+                  child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white
+                      ),
+                      child: Obx(() => Icon(
+                        Icons.g_translate_outlined,
+                        color: controller.model.showOriginalText.value ? ColorFontUtil.red02 :Colors.grey,
+                        size: 15,
+                      )) ),
+                )
               ],
             ),
           ),
@@ -117,8 +121,8 @@ class ChatScreen extends GetWidget<ChatController> {
                                 ? ChatDate(date: controller.model.messages[index].date,)
                                 : controller.model.messages[index - 1].date !=
                                         controller.model.messages[index].date
-                                    ? ChatDate(date: controller.model.messages[index - 1].date,)
-                                    : SizedBox();
+                                    ? ChatDate(date: controller.model.messages[index].date,)
+                                    : const SizedBox();
                           },
                           itemBuilder: (context, index) {
                             return AutoScrollTag(
@@ -147,19 +151,17 @@ class ChatScreen extends GetWidget<ChatController> {
                                                   controller
                                                       .model
                                                       .messages[index - 1]
-                                                      .senderId == Preferences.getUser()['id'] ? controller
-                                                      .model
-                                                      .messages[index - 1]
-                                                      .message : controller
-                                                      .model
-                                                      .messages[index - 1]
-                                                      .translationMsg,
+                                                      .message,
                                                   controller.model
                                                       .messages[index - 1].id,controller
                                                   .model
                                                   .messages[
                                               index - 1]
-                                                  .senderId);
+                                                  .senderId, controller
+                                                  .model
+                                                  .messages[
+                                              index - 1]
+                                                      .translationMsg);
                                             },
                                             replyTap: () async {
                                               final ind = controller
@@ -171,7 +173,7 @@ class ChatScreen extends GetWidget<ChatController> {
                                                           .messages[index - 1]
                                                           .replyMessageId);
                                               await controller
-                                                  .scrollToItem(ind);
+                                                  .scrollToItem(ind + 1);
                                             },
                                           )
                                         : (controller.model.messages[index - 1]
@@ -188,16 +190,10 @@ class ChatScreen extends GetWidget<ChatController> {
                                                     .model.messages[index - 1],
                                                 onReply: () {
                                                   controller.showReply(
-                                                      controller
+                                                     controller
                                                           .model
                                                           .messages[index - 1]
-                                                          .senderId == Preferences.getUser()['id'] ? controller
-                                                          .model
-                                                          .messages[index - 1]
-                                                          .message : controller
-                                                          .model
-                                                          .messages[index - 1]
-                                                          .translationMsg,
+                                                          .message,
                                                       controller
                                                           .model
                                                           .messages[index - 1]
@@ -205,7 +201,11 @@ class ChatScreen extends GetWidget<ChatController> {
                                                       .model
                                                       .messages[
                                                   index - 1]
-                                                      .senderId);
+                                                      .senderId,controller
+                                                      .model
+                                                      .messages[
+                                                  index - 1]
+                                                      .translationMsg);
                                                 },
                                                 replyTap: () async {
                                                   final ind = controller
@@ -218,7 +218,7 @@ class ChatScreen extends GetWidget<ChatController> {
                                                                   index - 1]
                                                               .replyMessageId);
                                                   await controller
-                                                      .scrollToItem(ind);
+                                                      .scrollToItem(ind +1);
                                                 },
                                               )
                                             : controller
@@ -246,7 +246,11 @@ class ChatScreen extends GetWidget<ChatController> {
                                                           .model
                                                           .messages[
                                                       index - 1]
-                                                          .senderId);
+                                                          .senderId,controller
+                                                          .model
+                                                          .messages[
+                                                      index - 1]
+                                                          .translationMsg);
                                                     },
                                                   )
                                                 : SenderChat(
@@ -272,10 +276,14 @@ class ChatScreen extends GetWidget<ChatController> {
                                                           .model
                                                           .messages[
                                                       index - 1]
-                                                              .senderId);
+                                                              .senderId,controller
+                                                          .model
+                                                          .messages[
+                                                      index - 1]
+                                                          .translationMsg);
                                                     },
                                                   ))
-                                    : SizedBox());
+                                    : const SizedBox());
 
                           }),
                     )),
@@ -284,8 +292,8 @@ class ChatScreen extends GetWidget<ChatController> {
                 () => controller.model.replyMessage.isNotEmpty
                     ? Container(
                         width: double.infinity,
-                        margin: EdgeInsets.only(left: 16, right: 16),
-                        padding: EdgeInsets.all(6),
+                        margin: const EdgeInsets.only(left: 16, right: 16),
+                        padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(5)),
@@ -293,7 +301,7 @@ class ChatScreen extends GetWidget<ChatController> {
                           children: [
                             Expanded(
                               child: Container(
-                                padding: EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                     color: ColorFontUtil.grayFA,
                                     borderRadius: BorderRadius.circular(5)),
@@ -301,7 +309,7 @@ class ChatScreen extends GetWidget<ChatController> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      Get.arguments['full_name'],
+                                      controller.model.replyMsgSenderId == Preferences.getUser()['id'] ? 'Me' : Get.arguments['full_name'],
                                       style: TextStyle(
                                           fontFamily: ColorFontUtil.poppins,
                                           color: ColorFontUtil.red15,
@@ -323,9 +331,9 @@ class ChatScreen extends GetWidget<ChatController> {
                               ),
                             ),
                             GestureDetector(
-                              child: Padding(
+                              child: const Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 8, right: 6),
+                                    EdgeInsets.only(left: 8, right: 6),
                                 child: Icon(
                                   Icons.close,
                                   size: 16,
@@ -333,13 +341,13 @@ class ChatScreen extends GetWidget<ChatController> {
                                 ),
                               ),
                               onTap: () {
-                                controller.showReply('', '', '');
+                                controller.showReply('', '', '','');
                               },
                             )
                           ],
                         ),
                       )
-                    : SizedBox(),
+                    : const SizedBox(),
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
@@ -348,7 +356,6 @@ class ChatScreen extends GetWidget<ChatController> {
                     Expanded(
                       child: TextFormField(
                         controller: controller.typeController,
-                        focusNode: controller.focusNode,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         style: TextStyle(
@@ -382,9 +389,7 @@ class ChatScreen extends GetWidget<ChatController> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              showDialog(context: context, builder: (context) {
-                                return SendImage(onTap: (v) {}, data: '');
-                              });
+                              Fluttertoast.showToast(msg: 'Server Limitation');
                             },
                             child: Image.asset(
                               'assets/images/attach.png',
@@ -400,14 +405,16 @@ class ChatScreen extends GetWidget<ChatController> {
                           Obx((() => controller.model.showBtn.value
                               ? GestureDetector(
                                   onTap: () async {
-                                    await controller.sendMessage();
+                                    if (controller.typeController.text.isNotEmpty) {
+                                      await controller.sendMessage();
+                                    }
                                   },
                                   child: Image.asset(
                                     'assets/images/send.png',
                                     width: 20,
                                     height: 20,
                                   ))
-                              : SizedBox()))
+                              : const SizedBox()))
                         ],
                       ),
                     )
@@ -416,6 +423,7 @@ class ChatScreen extends GetWidget<ChatController> {
               )
             ],
           ),
+          /*
           Positioned(
               bottom: 160,
               right: 16,
@@ -425,10 +433,12 @@ class ChatScreen extends GetWidget<ChatController> {
                         controller.scrollDown();
 
                       },
-                      child: Icon(Icons.arrow_downward_outlined),
+                      child: const Icon(Icons.arrow_downward_outlined),
                       backgroundColor: ColorFontUtil.redF5,
                     )
-                  : SizedBox())),
+                  : const SizedBox())),
+
+           */
         ],
       ),
     );
